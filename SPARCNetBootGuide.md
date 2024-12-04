@@ -2,10 +2,14 @@
 ## *Revision 0*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank Ncommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentationis important, and I hope that this document aids with that effort.
+
 *A note about inline citations: As I said, some of this guide is taken from other sources. To streamline citation of those sources, I have put letters in parentheses next to the appropriate section headings. These correspond to webpages referenced in Appendix C. I do not wish to take credit for the work of others, and I believe firmly in crediting sources.*
+
 ## Abstract
 If you're reading this document, it's likely that you have been brought here from a web search or someone linked it as an answer to a question you or someone else posed. The purpose of this document is, first and foremost, to provide a consolidated resource for those looking to boot their Sun workstations from the network based on my findings. There are many reasons one may wish to do this, including a lack of physical installation media or a lack of working removable media drives on the system one wishes to boot.
+
 This document will make a few assumptions, namely that you have a basic understanding of networking and Unix-like operating systems, as well as assuming that you have root access (either directly or via su) to the server system, and that you'll be working from a root shell. As I am limited by the hardware I have at my disposal, the procedures listed in this document have been tested on a SPARCstation 5, an Ultra 1, and an Ultra 5. That being said, the basics of this document should hold true for any Sun system that can boot from the network in the same way that these systems can. I will primarily focus on booting from NetBSD (and OpenBSD where applicable) and Solaris. If you wish to apply these instructions to other platforms and operating systems, I have included the resources I pulled from as well as other useful resources in Appendix C.
+
 Before you proceed, you must have a few things prepared:
 - A wired network. It does not need to be connected to the internet, although it may be beneficial for some client operating systems.
 - A system that can act as a server and a system that you wish to be your client. The server can be anything capable of wired networking and running an operating system capable of performing the tasks in this guide.
@@ -27,68 +31,104 @@ If you have all of those things, feel free to proceed to whichever section is ap
 - rexec
 - time
 3. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+  
 `/etc/ethers:
 08:00:20:00:07:EA client`
+
 4. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+
 `/etc/hosts:
 ...
 192.168.0.11 client`
+
 5. Make the /tftpboot directory if it doesn't already exist.
+
 `# mkdir /tftpboot`
+
 6. Make a directory where you wish to put the contents of the install CD.
+
 `# mkdir /home/client`
+
 7. Create or modify the /etc/bootparams file.
+
 `/etc/bootparams:
 installclient root=server:/home/client swap=server:/home/client/swap gateway=server:0xffffff00`
+
 8. Add the location of the copied install CD to /etc/exports.
+
 `/etc/exports:
 /home/client -alldirs -maproot=root`
+
 9. Restart (or start) all services listed in Step 1.
+
 10. Mount the SunOS 4.1.x CD
+
 `# mount -t cd9660 -o ro /dev/cd0 /cdrom`
+
 11. Set up the client's filesystem heirarchy and swap file.
+
 `# cd /home/client`
 `# dd if=/dev/zero of=swap bs=<swap size in megabytes>m count=1`
 `# mkdir -p usr/kvm`
 `# tar -xvpf /cdrom/export/exec/proto_root_sunos_4_1_4`
 `# cd /home/client/usr`
+
 12. Extract the common OS packages.
+
 `# for x in /cdrom/export/exec/sun4_sunos_4_1_4/*; do tar -xpf $x; done`
 `# tar -xpf /cdrom/export/share/sunos_4_1_4/manual`
+
 13. Install the architecture-specific packages. (If you don't know what platform group or architecture your system is, refer to Appendix B-i. For the purposes of demonstration, I'm using sun4m.)
+
 `# cd kvm`
+
 `# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/kvm`
+
 `# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/sys`
+
 14. Add the server and the client to the client's /etc/hosts file.
+
 `# cd ../../`
 `./etc/hosts:
 <server ip address> server
 192.168.0.11 client`
+
 15. Create the client's /dev nodes.
+
 `# cd dev`
 `# sed -i 's|^PATH=|PATH=/sbin:|g' MAKEDEV`
 `# ./MAKEDEV std`
 `# ./MAKEDEV pty0`
 `# ./MAKEDEV win`
 `# cd ..`
+
 16. Create the client's /etc/fstab file.
+
 `./etc/fstab:
 server:/home/client / nfs rw 0 0
 server:/home/client/usr /usr nfs rw 0 0
 swap /tmp tmp rw 0 0`
+
 *(Special note: At this time it would be ideal to also uncomment the mount /tmp line in rc.local so that /tmp will be mounted and you can use X11 and OpenWindows, among other things.)*
+
 17. Copy critical files to sbin and vmunix to the root directory.
+
 `# cp usr/kvm/boot/* sbin`
 `# cp usr/kvm/stand/sh sbin`
 `# cp usr/bin/hostname sbin`
 `# cp usr/kvm/stand/vmunix .`
+
 18. Copy the tftp boot file to /tftpboot and symlink it to the proper name for your system. (If you don't know how to do this, refer to Appendix B-iv.)
+
 `# cp usr/kvm/stand/boot.sun4m /tftpboot`
 `# cd /tftpboot`
 `# ln -s boot.sun4m C0A8000B.SUN4M`
+
 19. If all works out, at this point you should be able to tell the Sun to boot into single user mode from the network.
+
 `ok boot net -s`
-On the Sun:
+
+### *On the Sun:*
 20. Compile the source for the various utilities in the bigfs patch and put them in their proper places.
 - /etc/dump
 - /etc/fsck
@@ -96,8 +136,10 @@ On the Sun:
 - /etc/fsirand
 - /etc/mkfs
 - /usr/etc/quotacheck
+
 *(fsusageck.c will fail to compile but it doesn't seem to be necessary, as I don't actually find it anywhere in the system.)*
 21. Apply the NFS Jumbo Patch.
+
 `# cd /path/to/nfs/patch`
 `# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_client.o /usr/kvm/sys/``arch -k``/OBJ/nfs_client.old`
 `# cp ``arch -k``/nfs_client.o /usr/kvm/sys/\``arch -k``/OBJ/nfs_client.o`
@@ -105,7 +147,9 @@ On the Sun:
 `# cp ``arch -k``/nfs_server.o /usr/kvm/sys/``arch -k``/OBJ/nfs_server.o`
 `# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.old`
 `# cp ``arch -k``/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o`
+
 22. Recompile the kernel.
+
 `# cd /sys/``arch -k``/conf`
 `# cp GENERIC GENERIC.1`
 `# config GENERIC.1`
@@ -113,7 +157,8 @@ On the Sun:
 `# make`
 `# cp /vmunix /vmunix.save`
 `# cp vmunux /vmunix`
-23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should halt instead of reboot and then issue the boot net command at the OpenBoot "ok" prompt.)
+
+23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
 ## II. Solaris Diskful Install 
 ## *II-a. Solaris (a) (Tested on Solaris 2.5 - Solaris 10)*
@@ -444,8 +489,12 @@ Thirdly, you must symbolically link the boot file to your /tftpboot directory.
 ## Appendix C: Cited works and further reading
 ## *C-i. Cited works*
 [(a) Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
+
 [(b) FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid](http://www.obsolyte.com/sunFAQ/faq_nvram.html)
+
 [(c) SunOS 4.1 Diskless Installation Guide](https://www.panix.com/~rawallis/sunos41_diskless.html)
+
 ## *C-ii. Further reading*
 [NetBSD Diskless HOW-TO pages](https://www.netbsd.org/docs/network/netboot/)
+
 [diskless(8) OpenBSD man page](https://man.openbsd.org/diskless)
