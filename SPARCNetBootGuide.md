@@ -32,14 +32,18 @@ If you have all of those things, feel free to proceed to whichever section is ap
 - time
 3. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
   
-`/etc/ethers:
-08:00:20:00:07:EA client`
+```
+/etc/ethers:
+08:00:20:00:07:EA client
+```
 
 4. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
 
-`/etc/hosts:
+```
+/etc/hosts:
 ...
-192.168.0.11 client`
+192.168.0.11 client
+```
 
 5. Make the /tftpboot directory if it doesn't already exist.
 
@@ -51,13 +55,17 @@ If you have all of those things, feel free to proceed to whichever section is ap
 
 7. Create or modify the /etc/bootparams file.
 
-`/etc/bootparams:
-installclient root=server:/home/client swap=server:/home/client/swap gateway=server:0xffffff00`
+```
+/etc/bootparams:
+installclient root=server:/home/client swap=server:/home/client/swap gateway=server:0xffffff00
+```
 
 8. Add the location of the copied install CD to /etc/exports.
 
-`/etc/exports:
-/home/client -alldirs -maproot=root`
+```
+/etc/exports:
+/home/client -alldirs -maproot=root
+```
 
 9. Restart (or start) all services listed in Step 1.
 
@@ -68,14 +76,19 @@ installclient root=server:/home/client swap=server:/home/client/swap gateway=ser
 11. Set up the client's filesystem heirarchy and swap file.
 
 `# cd /home/client`
+
 `# dd if=/dev/zero of=swap bs=<swap size in megabytes>m count=1`
+
 `# mkdir -p usr/kvm`
+
 `# tar -xvpf /cdrom/export/exec/proto_root_sunos_4_1_4`
+
 `# cd /home/client/usr`
 
 12. Extract the common OS packages.
 
 `# for x in /cdrom/export/exec/sun4_sunos_4_1_4/*; do tar -xpf $x; done`
+
 `# tar -xpf /cdrom/export/share/sunos_4_1_4/manual`
 
 13. Install the architecture-specific packages. (If you don't know what platform group or architecture your system is, refer to Appendix B-i. For the purposes of demonstration, I'm using sun4m.)
@@ -89,39 +102,54 @@ installclient root=server:/home/client swap=server:/home/client/swap gateway=ser
 14. Add the server and the client to the client's /etc/hosts file.
 
 `# cd ../../`
-`./etc/hosts:
+
+```
+./etc/hosts:
 <server ip address> server
-192.168.0.11 client`
+192.168.0.11 client
+```
 
 15. Create the client's /dev nodes.
 
 `# cd dev`
+
 `# sed -i 's|^PATH=|PATH=/sbin:|g' MAKEDEV`
+
 `# ./MAKEDEV std`
+
 `# ./MAKEDEV pty0`
+
 `# ./MAKEDEV win`
+
 `# cd ..`
 
 16. Create the client's /etc/fstab file.
 
-`./etc/fstab:
+```
+./etc/fstab:
 server:/home/client / nfs rw 0 0
 server:/home/client/usr /usr nfs rw 0 0
-swap /tmp tmp rw 0 0`
+swap /tmp tmp rw 0 0
+```
 
 *(Special note: At this time it would be ideal to also uncomment the mount /tmp line in rc.local so that /tmp will be mounted and you can use X11 and OpenWindows, among other things.)*
 
 17. Copy critical files to sbin and vmunix to the root directory.
 
 `# cp usr/kvm/boot/* sbin`
+
 `# cp usr/kvm/stand/sh sbin`
+
 `# cp usr/bin/hostname sbin`
+
 `# cp usr/kvm/stand/vmunix .`
 
 18. Copy the tftp boot file to /tftpboot and symlink it to the proper name for your system. (If you don't know how to do this, refer to Appendix B-iv.)
 
 `# cp usr/kvm/stand/boot.sun4m /tftpboot`
+
 `# cd /tftpboot`
+
 `# ln -s boot.sun4m C0A8000B.SUN4M`
 
 19. If all works out, at this point you should be able to tell the Sun to boot into single user mode from the network.
@@ -141,78 +169,135 @@ swap /tmp tmp rw 0 0`
 21. Apply the NFS Jumbo Patch.
 
 `# cd /path/to/nfs/patch`
+
 `# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_client.o /usr/kvm/sys/``arch -k``/OBJ/nfs_client.old`
+
 `# cp ``arch -k``/nfs_client.o /usr/kvm/sys/\``arch -k``/OBJ/nfs_client.o`
+
 `# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_server.o /usr/kvm/sys/``arch -k``/OBJ/nfs_server.old`
+
 `# cp ``arch -k``/nfs_server.o /usr/kvm/sys/``arch -k``/OBJ/nfs_server.o`
+
 `# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.old`
+
 `# cp ``arch -k``/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o`
 
 22. Recompile the kernel.
 
 `# cd /sys/``arch -k``/conf`
+
 `# cp GENERIC GENERIC.1`
+
 `# config GENERIC.1`
+
 `# cd ../GENERIC.1`
+
 `# make`
+
 `# cp /vmunix /vmunix.save`
+
 `# cp vmunux /vmunix`
 
 23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
 ## II. Solaris Diskful Install 
 ## *II-a. Solaris (a) (Tested on Solaris 2.5 - Solaris 10)*
-Create a directory where you want the server to place the Solaris install files.
+1. Create a directory where you want the server to place the Solaris install files.
+
 `# mkdir /var/Solaris`
-Navigate to the Tools directory on the install disc.
+
+2. Navigate to the Tools directory on the install disc.
+   
 `# cd /path/to/Tools`
-Run the setup_install_server script and direct it to the directory created in Step 1 
+
+3. Run the setup_install_server script and direct it to the directory created in Step 1 
+
 `# ./setup_install_server /var/Solaris`
-If your distribution of Solaris comes on multiple discs, you will need to, at this point, eject the first disc and put in the second disc. Volume Manager should mount the disc for you.
-Navigate to the Tools directory on the new disc and run the add_to_install_server script 
+
+4. If your distribution of Solaris comes on multiple discs, you will need to, at this point, eject the first disc and put in the second disc. Volume Manager should mount the disc for you.
+
+5. Navigate to the Tools directory on the new disc and run the add_to_install_server script 
+
 `# ./add_to_install_server /var/Solaris`
-Repeat this as many times as necessary.
-Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
-`/etc/ethers:
-8:0:20:c0:ff:ee installclient`
-Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
-`/etc/hosts:
+
+6. Repeat this as many times as necessary.
+
+7. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+
+```
+/etc/ethers:
+8:0:20:c0:ff:ee installclient
+```
+
+8. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+
+```
+/etc/hosts:
 ...
-192.168.0.10 installclient`
-Navigate to the Tools directory of the install server and run the add_install_client script, specifying your client's platform group and hostname.
+192.168.0.10 installclient
+```
+
+9. Navigate to the Tools directory of the install server and run the add_install_client script, specifying your client's platform group and hostname.
+
 `# ./add_install_client installclient sun4u`
+
 *Special note for those making a Solaris 10 install server to boot Solaris 9 or earlier: You need to run the inetconv command to make the changes the script made to your inetd.conf file reflect in the actual settings of the smf service!*
+
 `# inetconv`
-If everything went according to plan, you can tell your Sun workstation to boot from the network and it will boot into the Solaris installer.
+
+10. If everything went according to plan, you can tell your Sun workstation to boot from the network and it will boot into the Solaris installer.
+
 `ok boot net`
 
 ## III. NeXTSTEP/OPENSTEP Diskful Install
 ## *III-a. NetBSD/OpenBSD*
-Ensure you have the following services enabled in your rc.conf:
+1. Ensure you have the following services enabled in your rc.conf:
+
 - rarpd
 - bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
 - tftpd (part of inetd, enabled by uncommenting the tftpd line in /etc/inetd.conf)
 - bootps (part of inetd, enabled by uncommenting the bootps line in /etc/inetd.conf) or dhcpd
 - nfs_server (in addition to rpcbind, mountd, lockd, and statd)
-Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
-`/etc/ethers:
-08:00:20:c0:ff:ee installclient`
-Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
-`/etc/hosts:
+
+2. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+
+```
+/etc/ethers:
+08:00:20:c0:ff:ee installclient
+```
+
+3. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+
+```
+/etc/hosts:
 ...
-192.168.0.10 installclient`
-Make the /tftpboot directory if it doesn't already exist.
+192.168.0.10 installclient
+```
+
+4. Make the /tftpboot directory if it doesn't already exist.
+
 `# mkdir /tftpboot`
-Make a directory where you wish to put the contents of the install CD.
+
+5. Make a directory where you wish to put the contents of the install CD.
+
 `# mkdir -p /export/installcd`
-Mount the install CD.
+
+6. Mount the install CD.
+
 `# mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt`
-Copy the contents of the CD you mounted in the previous step to the directory you created in Step 5.
+
+7. Copy the contents of the CD you mounted in the previous step to the directory you created in Step 5.
+
 `# cp -a /mnt/* /export/installcd`
-Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
-`# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4U`
-Create or modify the /etc/bootptab file.
-`/etc/dhcpd.conf:
+
+7. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+
+`# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
+
+8. Create or modify the /etc/bootptab file.
+
+```
+/etc/dhcpd.conf:
 deny unknown-clients;
 allow bootp;
 subnet 192.168.0.0 netmask 255.255.255.0 {
@@ -234,25 +319,43 @@ installclient:\
 :lg=<server ip address>:\
 :ip=192.168.0.10:\
 :hn=installclient:\
-:bf=C0A8000A.SUN4U:\
+:bf=C0A8000A.SUN4M:\
 :bs=auto:\
 :rp=/export/installcd/:\
-:vm=auto:`
-Create or modify the /etc/bootparams file.
-`/etc/bootparams:
-installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private`
-Add the location of the copied install CD to /etc/exports.
-`/etc/exports:
-/export/installcd -mapall=root -alldirs`
-Restart all services listed in Step 1.
+:vm=auto:
+```
+
+9. Create or modify the /etc/bootparams file.
+
+```
+/etc/bootparams:
+installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
+```
+
+10. Add the location of the copied install CD to /etc/exports.
+
+```
+/etc/exports:
+/export/installcd -mapall=root -alldirs
+```
+
+11. Restart all services listed in Step 1.
+
 **If you enabled tftpd and/or bootpd, be sure to restart inetd.*
-If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+
+12. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+
 `ok boot net`
+
 ## Appendix A: Programming the IDPROM  (b)
 ## *A-i. What is the NVRAM, IDPROM,  hostid, and ethernet address, and why is it important?*
+
 Before proceeding, a warning: improper use of the OpenBoot PROM console can brick your system. I know the information contained in this document to be correct, but I cannot guarantee you won't brick your machine if you go beyond what I talk about here. Proceed with caution. This is not to scare you, but to inform you.
+
 Your Sun's NVRAM and IDPROM hold firmware configuration settings. This includes the default boot device, diagnostic behavior, default display device, and, perhaps most importantly for this guide, your ethernet address and hostid.
+
 If you're reading this section of the guide (and, honestly, in general), it's likely that your Sun's NVRAM battery is dead. This means three important things: a) your Sun will always boot up in diagnostic mode (causing it to try unsuccessfully to boot from the network), b) your IDPROM information will be invalid, and c) any changes you make to settings will be cleared after you turn your machine off. This is a guide all about network booting and, with an invalid ethernet address, you can't do a lot. So, with that in mind, let's look at the makeup of the IDPROM data:
+
 Byte(s)
 Contents
 0
@@ -274,7 +377,8 @@ IDPROM checksum (bitwise xor of bytes 0-e)
 
 ## *A-ii. A crash course in IDPROM programming*
 To program your ethernet address to 8:0:20:c0:ff:ee and your hostid to 80coffee on a sun4m machine based on the table above:
-`1 0 mkp
+```
+1 0 mkp
 real-machine-type 1 mkp
 8 2 mkp
 0 3 mkp
@@ -289,166 +393,100 @@ ee 7 mkp
 c0 c mkp
 ff d mkp
 ee e mkp
-0 f 0 do i idprom@ xor loop f mkp`
+0 f 0 do i idprom@ xor loop f mkp
+```
 
 If you're on a SPARCserver 1000, type `update-system-idprom` at the "ok" prompt.
+
 Reset the machine with the `reset` command and it should reboot with the new ethernet address and hostid.
+
 ## *A-iii. Hostid Machine Type Listing*
-First Byte of hostid
-Machine
-01
-2/1x0
-02
-2/50
-11
-3/160
-12
-3/50
-13
-3/2x0
-14
-3/110
-17
-3/60
-18
-3/e
-21
-4/2x0
-22
-4/1x0
-23
-4/3x0
-24
-4/4x0
-31
-386i
-41
-3/4x0
-42
-3/80
-51
-SPARCstation 1 (4/60)
-52
-SPARCstation IPC (4/40)
-53
-SPARCstation 1+ (4/65)
-54
-SPARCstation SLC (4/20)
-55
-SPARCstation 2 (4/75)
-56
-SPARCstation ELC
-57
-SPARCstation IPX (4/50)
-61
-4/e
-71
-4/6x0
-72
-SPARCstation 10 or SPARCstation 20
-80
-SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra, Blade
+
+| First Byte of hostid | Machine |
+|---|---|
+| 01 | 2/1x0 |
+| 02 | 2/50 |
+| 11 | 3/160 |
+| 12 | 3/50 |
+| 13 | 3/2x0 |
+| 14 | 3/110 |
+| 17 | 3/60 |
+| 18 | 3/e |
+| 21 | 4/2x0 |
+| 22 | 4/1x0 |
+| 23 | 4/3x0 |
+| 24 | 4/4x0 |
+| 31 | 386i |
+| 41 | 3/4x0 |
+| 42 | 3/80 |
+| 51 | SPARCstation 1 (4/60) |
+| 52 | SPARCstation IPC (4/40) |
+| 53 | SPARCstation 1+ (4/65) |
+| 54 | SPARCstation SLC (4/20) |
+| 55 | SPARCstation 2 (4/75) |
+| 56 | SPARCstation ELC |
+| 57 | SPARCstation IPX (4/50) |
+| 61 | 4/e |
+| 71 | 4/6x0 |
+| 72 | SPARCstation 10 or SPARCstation 20 |
+| 80 | SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra, Blade |
 
 ## Appendix B: Platform Groups, useful OpenBoot settings, and other errata
 ## *B-i. Platform Group listing (a)*
+
 These are the platform groups for many of the SPARC systems you may encounter:
-Model
-Platform Group
-4/2x0
-sun4
-4/1x0
-sun4
-4/3x0
-sun4
-4/4x0
-sun4
-SPARCstation 1/1+
-sun4c
-SPARCstation 2
-sun4c
-SPARCstation 10
-sun4m
-SPARCstation 20
-sun4m
-SPARCstation 5/4
-sun4m
-SPARCstation IPC
-sun4c
-SPARCstation IPX
-sun4c
-SPARCclassic/SPARCstation LX/ZX
-sun4m
-SPARCclassic X
-sun4m
-Ultra 1
-sun4u
-Ultra 1E
-sun4u
-Ultra 2
-sun4u
-Ultra 30
-sun4u
-Ultra 5/10
-sun4u
-Ultra 60
-sun4u
-Ultra 80
-sun4u
-Blade 1000
-sun4u
-Blade 2000
-sun4u
-Blade 100/150
-sun4u
-Blade 2500 (Silver)
-sun4u
-Blade 1500 (Silver)
-sun4u
-Netra T1
-sun4u
-SPARCserver 1000
-sun4d
-SPARCserver 3x0/4x0
-sun4
-SPARCserver 6x0MP
-sun4m
-Ultra Enterprise/UltraSPARC-based Fire V-seies
-sun4u
-Fire T1000/T2000
-sun4v
-Fire T5120/T5220
-sun4v
-Fire T5140/T5240/T5440
-sun4v
-x86
-i86pc
+
+| Model | Platform Group |
+|---|---|
+| 4/2x0 | sun4 |
+| 4/1x0 | sun4 |
+| 4/3x0 | sun4 |
+| 4/4x0 | sun4 |
+| SPARCstation 1/1+ | sun4c |
+| SPARCstation 2 | sun4c |
+| SPARCstation 10/20 | sun4m |
+| SPARCstation 5/4 | sun4m |
+| SPARCstation IPC/IPX | sun4c |
+| SPARCclassic/SPARCstation LX/ZX | sun4m |
+| SPARCclassic X | sun4m |
+| Ultra 1 | sun4u |
+| Ultra 1E | sun4u |
+| Ultra 2 | sun4u |
+| Ultra 30 | sun4u |
+| Ultra 5/10 | sun4u |
+| Ultra 60 | sun4u |
+| Ultra 80 | sun4u |
+| Blade 1000 | sun4u |
+| Blade 2000 | sun4u |
+| Blade 100/150 | sun4u |
+| Blade 2500 (Silver) | sun4u |
+| Blade 1500 (Silver) | sun4u |
+| Netra T1 | sun4u |
+| SPARCserver 1000 | sun4d |
+| SPARCserver 3x0/4x0 | sun4 |
+| SPARCserver 6x0MP | sun4m |
+| Ultra Enterprise/UltraSPARC-based Fire V-seies | sun4u |
+| Fire T1000/T2000 | sun4v |
+| Fire T5120/T5220 | sun4v |
+| Fire T5140/T5240/T5440 | sun4v |
+| x86 | i86pc |
 
 ## *B-ii. Operating system compatibility matrix*
 This is a compatibility matrix for operating systems on Sun systems. This information is correct to the best of my knowledge, but may become outdated over time.
-System
-Compatible Operating Systems
-Sun-1
-Sun UNIX 0.7
-Sun-2
-SunOS 1.0 - 4.0.1, NetBSD (Tier II)
-Sun-3
-SunOS 3.0 - 4.1.1_U1, NetBSD (Tier II), OpenBSD (up to 2.9)
-sun4
-SunOS 4.0.3e - 4.1.4, Solaris 2.0 - 7, NetBSD (Tier II), OpenBSD (up to 5.9)
-sun4c
-SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 7, NetBSD (Tier II), OpenBSD (up to 5.9)
-sun4d
-Solaris 2.2 - 8
-sun4m
-SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs only)
-sun4u
-Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD
-sun4v
-Solaris 10 3/05 HW2 and newer, NetBSD (Tier I), and OpenBSD
-SPARCserver 600MP
-SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD (up to 5.9)
-UltraSPARC I
-Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD
+
+| System | Compatible Operating Systems |
+|---|---|
+| Sun-1 | Sun UNIX 0.7 |
+| Sun-2 | SunOS 1.0 - 4.0.1, NetBSD (Tier II) |
+| Sun-3 | SunOS 3.0 - 4.1.1_U1, NetBSD (Tier II), OpenBSD (up to 2.9) |
+| sun4 | SunOS 4.0.3e - 4.1.4, Solaris 2.0 - 7, NetBSD (Tier II), OpenBSD (up to 5.9) |
+| sun4c | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 7, NetBSD (Tier II), OpenBSD (up to 5.9) |
+| sun4d | Solaris 2.2 - 8 |
+| sun4m | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs only) |
+| sun4u | Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD |
+| sun4v | Solaris 10 3/05 HW2 and newer and OpenBSD |
+| SPARCserver 600MP | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD (up to 5.9) |
+| UltraSPARC I | Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD |
 
 ## *B-iii. Useful OpenBoot settings*
 ### B-ii-a. diag-switch?
@@ -461,20 +499,34 @@ This controls what the default setting is when the boot command is issued with n
 I put this here because sometimes you don't want the default output device to be what the firmware defaults to, or you want to change settings for the default output device. This setting allows you to specify the default output device (generally screen or ttya by default depending on if you have a keyboard attached or not) and any settings for said output device (I set my framebuffer to run at 1024x768x60 using this setting, for instance).
 ## *B-iv. Using lofiadm to mount iso images.*
 In some versions of Solaris (I've tested with Solaris 10, but it may exist in other versions as well) there exists the lofiadm utility. This exists as a way to work with loopback files (disc/k image files). For the purposes of this guide, we will be looking at using it to mount CD images.
+
 You can invoke the lofiadm utility with the following:
+
 `# lofiadm -a /path/to/image.iso`
+
 This will add the iso file as a loopback filesystem on the first available lofi device. You can also specify a lofi device, like so (where n is the lofi device number):
+
 `# lofiadm -a /path/to/image.iso /dev/lofi/n`
+
 The output of either of these commands will return the lofi device that the iso file was added to. You can then mount the device like so (where n is the lofi device number):
+
 `# mount -F hsfs -o ro /dev/lofi/n /mnt`
+
 You can also combine both commands together:
+
 `# mount -F hsfs -o ro ``lofiadm -a /path/to/image.iso`` /mnt`
+
 ## *B-v. Naming your tftp boot file.*
 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
+
 Sun workstations require the tftp boot file to be named for their IP address represented in hexadecimal followed by their platform group.
+
 First, you need to determine your IP address in hexadecimal. This can be done with the bc command.
+
 Secondly, you need to determine your platform group. See Appendix B-i for more information. For the sake of this demonstration, I'll be choosing the sun4u platform group.
-`# bc
+
+```
+# bc
 obase=16
 192
 C0
@@ -483,9 +535,13 @@ A8
 0
 0
 10
-A`
+A
+```
+
 Thirdly, you must symbolically link the boot file to your /tftpboot directory.
+
 `# ln -s /path/to/boot/file /tftpboot/C0A8000A.SUN4U`
+
 ## Appendix C: Cited works and further reading
 ## *C-i. Cited works*
 [(a) Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
