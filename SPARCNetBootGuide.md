@@ -514,7 +514,9 @@ The output of either of these commands will return the lofi device that the iso 
 
 You can also combine both commands together:
 
-`# mount -F hsfs -o ro ``lofiadm -a /path/to/image.iso`` /mnt`
+```
+# mount -F hsfs -o ro `lofiadm -a /path/to/image.iso` /mnt
+```
 
 ## *B-v. Naming your tftp boot file.*
 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
