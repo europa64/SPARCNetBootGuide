@@ -1,7 +1,7 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
 ## *Revision 0*
 ## Foreword
-This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank Ncommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation are important, and I hope that this document aids with that effort.
+This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
 *A note about inline citations: As I said, some of this guide is taken from other sources. To streamline citation of those sources, I have put letters in parentheses next to the appropriate section headings. These correspond to webpages referenced in Appendix C. I do not wish to take credit for the work of others, and I believe firmly in crediting sources.*
 
@@ -16,8 +16,11 @@ Before you proceed, you must have a few things prepared:
 - Your client's platform group. If you don't know this, please refer to Appendix B-i.
 - A programmed IDPROM and NVRAM on the client. Unless you have specifically ensured your timekeeper's battery has juice left, it's likely dead. If you need to program your timekeeper, refer to Appendix A.
 If you have all of those things, feel free to proceed to whichever section is applicable to your goals.  Every network and configuration is different, and you may have to tweak these guides to meet your needs. I can say these worked on my machines but, as always with things like this, your mileage may vary. I make no guarantees about any of the stuff here other than that it has been tested by me to work. I, however, am an individual and only have so many resources at my disposal, so I cannot test every possible configuration. I will add more configurations with server and client operating systems as I test them and, if anyone has their own configurations that they would like to add, feel free to do so on Github. Have fun and best of luck.
+
 ## I. SunOS 4 Diskless Install
-## *I-a. NetBSD/OpenBSD (c)*
+
+## *I-a. NetBSD/OpenBSD* [^c]
+
 1. Ensure you have the following services enabled in your rc.conf:
 - rarpd
 - bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
@@ -201,7 +204,7 @@ swap /tmp tmp rw 0 0
 23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
 ## II. Solaris Diskful Install 
-## *II-a. Solaris (a) (Tested on Solaris 2.5 - Solaris 10)*
+## *II-a. Solaris* [^b]
 1. Create a directory where you want the server to place the Solaris install files.
 
 `# mkdir /var/Solaris`
@@ -347,7 +350,7 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 `ok boot net`
 
-## Appendix A: Programming the IDPROM  (b)
+## Appendix A: Programming the IDPROM  [^d]
 ## *A-i. What is the NVRAM, IDPROM,  hostid, and ethernet address, and why is it important?*
 
 Before proceeding, a warning: improper use of the OpenBoot PROM console can brick your system. I know the information contained in this document to be correct, but I cannot guarantee you won't brick your machine if you go beyond what I talk about here. Proceed with caution. This is not to scare you, but to inform you.
@@ -432,7 +435,7 @@ Reset the machine with the `reset` command and it should reboot with the new eth
 | 80 | SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra, Blade |
 
 ## Appendix B: Platform Groups, useful OpenBoot settings, and other errata
-## *B-i. Platform Group listing (a)*
+## *B-i. Platform Group listing:* [^a]
 
 These are the platform groups for many of the SPARC systems you may encounter:
 
@@ -514,9 +517,7 @@ The output of either of these commands will return the lofi device that the iso 
 
 You can also combine both commands together:
 
-```
-# mount -F hsfs -o ro `lofiadm -a /path/to/image.iso` /mnt
-```
+`# mount -F hsfs -o ro ``lofiadm -a /path/to/image.iso`` /mnt`
 
 ## *B-v. Naming your tftp boot file.*
 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
@@ -546,11 +547,22 @@ Thirdly, you must symbolically link the boot file to your /tftpboot directory.
 
 ## Appendix C: Cited works and further reading
 ## *C-i. Cited works*
-[(a) Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
 
-[(b) FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid](http://www.obsolyte.com/sunFAQ/faq_nvram.html)
+All cited works are also linked in the document.
 
-[(c) SunOS 4.1 Diskless Installation Guide](https://www.panix.com/~rawallis/sunos41_diskless.html)
+[Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
+
+[FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid](http://www.obsolyte.com/sunFAQ/faq_nvram.html)
+
+[SunOS 4.1 Diskless Installation Guide](https://www.panix.com/~rawallis/sunos41_diskless.html)
+
+[^a]: [Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
+
+[^b]: [Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
+[^c]: [FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid](http://www.obsolyte.com/sunFAQ/faq_nvram.html)
+
+[^d]: [SunOS 4.1 Diskless Installation Guide](https://www.panix.com/~rawallis/sunos41_diskless.html)
+
 
 ## *C-ii. Further reading*
 [NetBSD Diskless HOW-TO pages](https://www.netbsd.org/docs/network/netboot/)
