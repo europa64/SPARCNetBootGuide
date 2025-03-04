@@ -78,33 +78,39 @@ installclient root=server:/home/client swap=server:/home/client/swap gateway=ser
 
 11. Set up the client's filesystem heirarchy and swap file.
 
-`# cd /home/client`
+```
+# cd /home/client
 
-`# dd if=/dev/zero of=swap bs=<swap size in megabytes>m count=1`
+# dd if=/dev/zero of=swap bs=<swap size in megabytes>m count=1
 
-`# mkdir -p usr/kvm`
+# mkdir -p usr/kvm
 
-`# tar -xvpf /cdrom/export/exec/proto_root_sunos_4_1_4`
+# tar -xvpf /cdrom/export/exec/proto_root_sunos_4_1_4
 
-`# cd /home/client/usr`
+`# cd /home/client/usr
+```
 
 12. Extract the common OS packages.
 
-`# for x in /cdrom/export/exec/sun4_sunos_4_1_4/*; do tar -xpf $x; done`
+```
+# for x in /cdrom/export/exec/sun4_sunos_4_1_4/*; do tar -xpf $x; done
 
-`# tar -xpf /cdrom/export/share/sunos_4_1_4/manual`
+# tar -xpf /cdrom/export/share/sunos_4_1_4/manual
+```
 
 13. Install the architecture-specific packages. (If you don't know what platform group or architecture your system is, refer to Appendix B-i. For the purposes of demonstration, I'm using sun4m.)
 
-`# cd kvm`
+```
+# cd kvm
 
-`# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/kvm`
+# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/kvm
 
-`# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/sys`
+# tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/sys
 
 14. Add the server and the client to the client's /etc/hosts file.
 
-`# cd ../../`
+# cd ../../
+```
 
 ```
 ./etc/hosts:
@@ -114,17 +120,19 @@ installclient root=server:/home/client swap=server:/home/client/swap gateway=ser
 
 15. Create the client's /dev nodes.
 
-`# cd dev`
+```
+# cd dev
 
-`# sed -i 's|^PATH=|PATH=/sbin:|g' MAKEDEV`
+# sed -i 's|^PATH=|PATH=/sbin:|g' MAKEDEV
 
-`# ./MAKEDEV std`
+# ./MAKEDEV std
 
-`# ./MAKEDEV pty0`
+# ./MAKEDEV pty0
 
-`# ./MAKEDEV win`
+# ./MAKEDEV win
 
-`# cd ..`
+# cd ..
+```
 
 16. Create the client's /etc/fstab file.
 
@@ -139,21 +147,25 @@ swap /tmp tmp rw 0 0
 
 17. Copy critical files to sbin and vmunix to the root directory.
 
-`# cp usr/kvm/boot/* sbin`
+```
+# cp usr/kvm/boot/* sbin
 
-`# cp usr/kvm/stand/sh sbin`
+# cp usr/kvm/stand/sh sbin
 
-`# cp usr/bin/hostname sbin`
+# cp usr/bin/hostname sbin
 
-`# cp usr/kvm/stand/vmunix .`
+# cp usr/kvm/stand/vmunix .
+```
 
 18. Copy the tftp boot file to /tftpboot and symlink it to the proper name for your system. (If you don't know how to do this, refer to Appendix B-iv.)
 
-`# cp usr/kvm/stand/boot.sun4m /tftpboot`
+```
+# cp usr/kvm/stand/boot.sun4m /tftpboot
 
-`# cd /tftpboot`
+# cd /tftpboot
 
-`# ln -s boot.sun4m C0A8000B.SUN4M`
+# ln -s boot.sun4m C0A8000B.SUN4M
+```
 
 19. If all works out, at this point you should be able to tell the Sun to boot into single user mode from the network.
 
@@ -171,35 +183,39 @@ swap /tmp tmp rw 0 0
 *(fsusageck.c will fail to compile but it doesn't seem to be necessary, as I don't actually find it anywhere in the system.)*
 21. Apply the NFS Jumbo Patch.
 
-`# cd /path/to/nfs/patch`
+```
+# cd /path/to/nfs/patch
 
-`# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_client.o /usr/kvm/sys/``arch -k``/OBJ/nfs_client.old`
+# cp /usr/kvm/sys/`arch -k`/OBJ/nfs_client.o /usr/kvm/sys/`arch -k`/OBJ/nfs_client.old
 
-`# cp ``arch -k``/nfs_client.o /usr/kvm/sys/\``arch -k``/OBJ/nfs_client.o`
+`# cp `arch -k`/nfs_client.o /usr/kvm/sys/\`arch -k`/OBJ/nfs_client.o
 
-`# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_server.o /usr/kvm/sys/``arch -k``/OBJ/nfs_server.old`
+# cp /usr/kvm/sys/`arch -k`/OBJ/nfs_server.o /usr/kvm/sys/`arch -k`/OBJ/nfs_server.old
 
-`# cp ``arch -k``/nfs_server.o /usr/kvm/sys/``arch -k``/OBJ/nfs_server.o`
+# cp `arch -k`/nfs_server.o /usr/kvm/sys/`arch -k`/OBJ/nfs_server.o
 
-`# cp /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.old`
+# cp /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.o /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.old
 
-`# cp ``arch -k``/nfs_vnodeops.o /usr/kvm/sys/``arch -k``/OBJ/nfs_vnodeops.o`
+# cp `arch -k`/nfs_vnodeops.o /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.o
+```
 
 22. Recompile the kernel.
 
-`# cd /sys/``arch -k``/conf`
+```
+# cd /sys/`arch -k`/conf
 
-`# cp GENERIC GENERIC.1`
+# cp GENERIC GENERIC.1
 
-`# config GENERIC.1`
+# config GENERIC.1
 
-`# cd ../GENERIC.1`
+# cd ../GENERIC.1
 
-`# make`
+# make
 
-`# cp /vmunix /vmunix.save`
+# cp /vmunix /vmunix.save
 
-`# cp vmunux /vmunix`
+# cp vmunux /vmunix
+```
 
 23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
