@@ -181,6 +181,7 @@ swap /tmp tmp rw 0 0
 - /usr/etc/quotacheck
 
 *(fsusageck.c will fail to compile but it doesn't seem to be necessary, as I don't actually find it anywhere in the system.)*
+
 21. Apply the NFS Jumbo Patch.
 
 ```
