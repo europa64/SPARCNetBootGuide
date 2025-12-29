@@ -1,0 +1,16 @@
+name: Long Usage
+
+on: push
+
+jobs:
+  convert_via_pandoc:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: ls > input.txt  # create an example file
+      - run: pwd >> input.txt
+      - uses: docker://pandoc/core:3.8
+        with:
+          args: >-  # allows you to break string into multiple lines
+            --standalone
+            --output=index.html
+            input.txt
