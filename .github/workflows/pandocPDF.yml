@@ -8,9 +8,12 @@ jobs:
   convert_via_pandoc:
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v4
+        with:
+          path: europa64/SPARCNetBootGuide
       - uses: docker://pandoc/core:3.8
         with:
           args: >-
             --standalone
             --output=SPARCNetBootGuide.pdf
-            ./SPARCNetBootGuide.md
+            ${{ github.workspace }}/SPARCNetBootGuide.md
