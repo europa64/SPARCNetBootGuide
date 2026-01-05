@@ -10,6 +10,8 @@ jobs:
     defaults:
         run:
             working-directory: ./
+    permissions:
+        contents: write
     steps:
         - name: clone repo to runner
           uses: actions/checkout@v5
@@ -20,3 +22,5 @@ jobs:
                 --standalone
                 --output=SPARCNetBootGuide.pdf
                 SPARCNetBootGuide.md
+        - name: commit back to repo
+          uses: stefanzweifel/git-auto-commit-action@v7
