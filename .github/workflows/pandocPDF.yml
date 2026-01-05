@@ -19,4 +19,4 @@ jobs:
             args: >-
                 --standalone
                 --output=SPARCNetBootGuide.pdf
-                ${{ github.workspace }}/europa64/SPARCNetBootGuide/SPARCNetBootGuide.md
+                SPARCNetBootGuide.md
