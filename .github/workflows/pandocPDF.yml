@@ -7,13 +7,16 @@ on:
 jobs:
   convert_via_pandoc:
     runs-on: ubuntu-24.04
+    defaults:
+        run:
+            working-directory: ./
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: europa64/SPARCNetBootGuide
-      - uses: docker://pandoc/core:3.8
-        with:
-          args: >-
-            --standalone
-            --output=SPARCNetBootGuide.pdf
-            ${{ github.workspace }}/europa64/SPARCNetBootGuide/SPARCNetBootGuide.md
+        - name: clone repo to runner
+          uses: actions/checkout@v5
+        - name: convert md to pdf
+          uses: docker://pandoc/core:3.8
+          with:
+            args: >-
+                --standalone
+                --output=SPARCNetBootGuide.pdf
+                ${{ github.workspace }}/europa64/SPARCNetBootGuide/SPARCNetBootGuide.md
