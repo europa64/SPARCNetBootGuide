@@ -458,6 +458,17 @@ install files.</li>
 created in Step 1</li>
 </ol>
 <p><code># ./setup_install_server /var/Solaris</code></p>
+<p><em>Special note for those making a Solaris 10 install server: There
+has been behavior observed by <a
+href="https://www.nick99nack.com/">nick99nack</a> that, when Solaris 10
+is installed on a ZFS pool, you may be unable to export the install
+directory on account of it “is not a local filesystem.” If that is an
+issue that you run into, use the solution he provided me below to create
+a UFS-formatted file that can be mounted as a loop device:</em></p>
+<pre><code># mkfile 10g /var/jumpstart.img [you can put it anywhere]
+# lofiadm -a /var/jumpstart.img
+# newfs /dev/lofi/1
+# mount /dev/lofi/1 /var/Solaris</code></pre>
 <ol start="4" type="1">
 <li><p>If your distribution of Solaris comes on multiple discs, you will
 need to, at this point, eject the first disc and put in the second disc.
@@ -553,7 +564,7 @@ refer to Appendix B-i.)</li>
 </ol>
 <p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
 <ol start="8" type="1">
-<li>Create or modify the /etc/bootptab file.</li>
+<li>Create or modify the /etc/dhcpd.conf file.</li>
 </ol>
 <pre><code>/etc/dhcpd.conf:
 deny unknown-clients;
