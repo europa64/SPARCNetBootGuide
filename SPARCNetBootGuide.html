@@ -665,6 +665,15 @@ ee e mkp
 0 f 0 do i idprom@ xor loop f mkp</code></pre>
 <p>If you’re on a SPARCserver 1000, type
 <code>update-system-idprom</code> at the “ok” prompt.</p>
+<p>There is also another way to set the idprom on some revisions of the
+OBP: <code>8 0 20 c0 ff ee 80c0ffee mkpl</code> and hitting Return
+followed by hitting CTRL+D followed by CTRL+R. If it gives no output and
+returns you to the <code>ok</code> prompt, it has succeeded. If it shows
+a Sun Microsystems copyright, it has failed. This is sometimes due to
+the idprom not being invalidated before running the command. If this is
+the case, run <code>f idprom@ 1 xor f mkp</code> and hit Return, then
+trying the invocation again. If that still doesn’t work, then try the
+method listed above.</p>
 <p>Reset the machine with the <code>reset</code> command and it should
 reboot with the new ethernet address and hostid.</p>
 <h2 id="a-iii.-hostid-machine-type-listing"><em>A-iii. Hostid Machine
