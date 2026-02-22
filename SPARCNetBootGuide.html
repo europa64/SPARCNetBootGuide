@@ -564,7 +564,7 @@ refer to Appendix B-i.)</li>
 </ol>
 <p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
 <ol start="8" type="1">
-<li>Create or modify the /etc/dhcpd.conf file.</li>
+<li>Create or modify the /etc/dhcpd.conf or /etc/bootptab file.</li>
 </ol>
 <pre><code>/etc/dhcpd.conf:
 deny unknown-clients;
@@ -579,8 +579,8 @@ filename &quot;C0A8000B.SUN4M&quot;;
 fixed-address installclient;
 option root-path &quot;/export/installcd&quot;;
 }
-}
-/etc/bootptab:
+}</code></pre>
+<pre><code>/etc/bootptab:
 installclient:\
 :ht=ether:\
 :ha=080020C0FFEE:\
@@ -1016,28 +1016,34 @@ during startup. It also sets the default boot device to the network by
 default while this setting is set to true. It will be set to true by
 default every time you turn on your system on if the timekeeper battery
 is dead. I would recommend setting this to false to shorten the time it
-takes to subsequently reboot. ### B-ii-b. auto-boot? This determines if
-the system tries to auto-boot upon startup. This is set to true by
-default. It’s a matter of personal preference whether it’s enabled or
-not. I prefer to boot to the OpenBoot prompt and then choose my boot
-device from there. Be aware this setting will be largely inconsequential
-when you cold boot the system if the timekeeper battery is dead. ###
-B-ii-c. boot-device This controls what the default setting is when the
-boot command is issued with no arguments. The default is for it to try
-booting from disk first and then from the network. Like auto-boot? It’s
-a largely inconsequential setting if your timekeeper battery is dead.
-### B-ii-d. output-device I put this here because sometimes you don’t
-want the default output device to be what the firmware defaults to, or
-you want to change settings for the default output device. This setting
-allows you to specify the default output device (generally screen or
-ttya by default depending on if you have a keyboard attached or not) and
-any settings for said output device (I set my framebuffer to run at
-1024x768x60 using this setting, for instance). ## <em>B-iv. Using
-lofiadm to mount iso images.</em> In some versions of Solaris (I’ve
-tested with Solaris 10, but it may exist in other versions as well)
-there exists the lofiadm utility. This exists as a way to work with
-loopback files (disc/k image files). For the purposes of this guide, we
-will be looking at using it to mount CD images.</p>
+takes to subsequently reboot.</p>
+<h3 id="b-ii-b.-auto-boot">B-ii-b. auto-boot?</h3>
+<p>This determines if the system tries to auto-boot upon startup. This
+is set to true by default. It’s a matter of personal preference whether
+it’s enabled or not. I prefer to boot to the OpenBoot prompt and then
+choose my boot device from there. Be aware this setting will be largely
+inconsequential when you cold boot the system if the timekeeper battery
+is dead.</p>
+<h3 id="b-ii-c.-boot-device">B-ii-c. boot-device</h3>
+<p>This controls what the default setting is when the boot command is
+issued with no arguments. The default is for it to try booting from disk
+first and then from the network. Like auto-boot? It’s a largely
+inconsequential setting if your timekeeper battery is dead.</p>
+<h3 id="b-ii-d.-output-device">B-ii-d. output-device</h3>
+<p>I put this here because sometimes you don’t want the default output
+device to be what the firmware defaults to, or you want to change
+settings for the default output device. This setting allows you to
+specify the default output device (generally screen or ttya by default
+depending on if you have a keyboard attached or not) and any settings
+for said output device (I set my framebuffer to run at 1024x768x60 using
+this setting, for instance).</p>
+<h2 id="b-iv.-using-lofiadm-to-mount-iso-images."><em>B-iv. Using
+lofiadm to mount iso images.</em></h2>
+<p>In some versions of Solaris (I’ve tested with Solaris 10, but it may
+exist in other versions as well) there exists the lofiadm utility. This
+exists as a way to work with loopback files (disc/k image files). For
+the purposes of this guide, we will be looking at using it to mount CD
+images.</p>
 <p>You can invoke the lofiadm utility with the following:</p>
 <p><code># lofiadm -a /path/to/image.iso</code></p>
 <p>This will add the iso file as a loopback filesystem on the first
@@ -1049,7 +1055,7 @@ that the iso file was added to. You can then mount the device like so
 (where n is the lofi device number):</p>
 <p><code># mount -F hsfs -o ro /dev/lofi/n /mnt</code></p>
 <p>You can also combine both commands together:</p>
-<p><code># mount -F hsfs -o ro ``lofiadm -a /path/to/image.iso`` /mnt</code></p>
+<p><code># mount -F hsfs -o ro $(lofiadm -a /path/to/image.iso) /mnt</code></p>
 <h2 id="b-v.-naming-your-tftp-boot-file."><em>B-v. Naming your tftp boot
 file.</em></h2>
 <p>This is a short and simple guide for how to name your Sun’s tftp boot
