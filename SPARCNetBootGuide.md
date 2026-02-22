@@ -323,7 +323,7 @@ swap /tmp tmp rw 0 0
 
 `# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
 
-8. Create or modify the /etc/dhcpd.conf file.
+8. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
 
 ```
 /etc/dhcpd.conf:
@@ -340,6 +340,8 @@ fixed-address installclient;
 option root-path "/export/installcd";
 }
 }
+```
+```
 /etc/bootptab:
 installclient:\
 :ht=ether:\
@@ -520,15 +522,23 @@ This is a compatibility matrix for operating systems on Sun systems. This inform
 | UltraSPARC I | Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD |
 
 ## *B-iii. Useful OpenBoot settings*
+
 ### B-ii-a. diag-switch?
 This determines if the system goes through an extended self-test during startup. It also sets the default boot device to the network by default while this setting is set to true. It will be set to true by default every time you turn on your system on if the timekeeper battery is dead. I would recommend setting this to false to shorten the time it takes to subsequently reboot.
+
 ### B-ii-b. auto-boot?
 This determines if the system tries to auto-boot upon startup. This is set to true by default. It's a matter of personal preference whether it's enabled or not. I prefer to boot to the OpenBoot prompt and then choose my boot device from there. Be aware this setting will be largely inconsequential when you cold boot the system if the timekeeper battery is dead.
+
 ### B-ii-c. boot-device
+
 This controls what the default setting is when the boot command is issued with no arguments. The default is for it to try booting from disk first and then from the network. Like auto-boot? It's a largely inconsequential setting if your timekeeper battery is dead.
+
 ### B-ii-d. output-device
+
 I put this here because sometimes you don't want the default output device to be what the firmware defaults to, or you want to change settings for the default output device. This setting allows you to specify the default output device (generally screen or ttya by default depending on if you have a keyboard attached or not) and any settings for said output device (I set my framebuffer to run at 1024x768x60 using this setting, for instance).
+
 ## *B-iv. Using lofiadm to mount iso images.*
+
 In some versions of Solaris (I've tested with Solaris 10, but it may exist in other versions as well) there exists the lofiadm utility. This exists as a way to work with loopback files (disc/k image files). For the purposes of this guide, we will be looking at using it to mount CD images.
 
 You can invoke the lofiadm utility with the following:
@@ -545,7 +555,7 @@ The output of either of these commands will return the lofi device that the iso 
 
 You can also combine both commands together:
 
-`# mount -F hsfs -o ro ``lofiadm -a /path/to/image.iso`` /mnt`
+`# mount -F hsfs -o ro $(lofiadm -a /path/to/image.iso) /mnt`
 
 ## *B-v. Naming your tftp boot file.*
 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
