@@ -512,7 +512,7 @@ installer.</li>
 Diskful Install</h2>
 <h2 id="iii-a.-netbsdopenbsd"><em>III-a. NetBSD/OpenBSD</em></h2>
 <ol type="1">
-<li>Ensure you have the following services enabled in your rc.conf:</li>
+<li>Ensure you have the following services enabled:</li>
 </ol>
 <ul>
 <li>rarpd</li>
@@ -555,7 +555,7 @@ CD.</li>
 directory you created in Step 5.</li>
 </ol>
 <p><code># cp -a /mnt/* /export/installcd</code></p>
-<ol start="7" type="1">
+<ol start="8" type="1">
 <li>Symbolically link the Sun boot file to the /tftpboot directory,
 where the name is your Sun’s IP address represented in hexadecimal
 followed by your platform group. (If you don’t know how to do this,
@@ -563,7 +563,7 @@ please see Appendix B-iv. If you don’t know your platform group, please
 refer to Appendix B-i.)</li>
 </ol>
 <p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
-<ol start="8" type="1">
+<ol start="9" type="1">
 <li>Create or modify the /etc/dhcpd.conf or /etc/bootptab file.</li>
 </ol>
 <pre><code>/etc/dhcpd.conf:
@@ -592,21 +592,113 @@ installclient:\
 :bs=auto:\
 :rp=/export/installcd/:\
 :vm=auto:</code></pre>
-<ol start="9" type="1">
+<ol start="10" type="1">
 <li>Create or modify the /etc/bootparams file.</li>
 </ol>
 <pre><code>/etc/bootparams:
 installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private</code></pre>
-<ol start="10" type="1">
+<ol start="11" type="1">
 <li>Add the location of the copied install CD to /etc/exports.</li>
 </ol>
 <pre><code>/etc/exports:
 /export/installcd -mapall=root -alldirs</code></pre>
-<ol start="11" type="1">
+<ol start="12" type="1">
 <li>Restart all services listed in Step 1.</li>
 </ol>
 <p>**If you enabled tftpd and/or bootpd, be sure to restart inetd.*</p>
+<ol start="13" type="1">
+<li>If all works out, at this point you should be able to tell the Sun
+to boot from the network and it’ll boot into the install CD.</li>
+</ol>
+<p><code>ok boot net</code></p>
+<h2 id="iii-b.-solaris"><em>III-b. Solaris</em></h2>
+<ol type="1">
+<li>Ensure you have the following services enabled:</li>
+</ol>
+<ul>
+<li>rarpd</li>
+<li>bootparams (called bootparamd in rc.conf, but refered to as
+bootparams elsewhere)</li>
+<li>tftpd (part of inetd, enabled by uncommenting the tftpd line in
+/etc/inetd.conf)</li>
+<li>bootps (part of inetd, enabled by uncommenting the bootps line in
+/etc/inetd.conf) or dhcpd</li>
+<li>nfs_server (in addition to rpcbind, mountd, lockd, and statd)</li>
+</ul>
+<ol start="2" type="1">
+<li>Create or modify the /etc/ethers file with your Sun’s ethernet
+address and hostname:</li>
+</ol>
+<pre><code>/etc/ethers:
+08:00:20:c0:ff:ee installclient</code></pre>
+<ol start="3" type="1">
+<li>Modify /etc/hosts with the hostname you specified in /etc/ethers and
+the IP address you wish to assign your client</li>
+</ol>
+<pre><code>/etc/hosts:
+...
+192.168.0.10 installclient</code></pre>
+<ol start="4" type="1">
+<li>Make the /tftpboot directory if it doesn’t already exist.</li>
+</ol>
+<p><code># mkdir /tftpboot</code></p>
+<ol start="5" type="1">
+<li>Make a directory where you wish to put the contents of the install
+CD.</li>
+</ol>
+<p><code># mkdir -p /export/installcd</code></p>
+<ol start="6" type="1">
+<li>Mount the install CD.*</li>
+</ol>
+<p><code># mount -F ufs -o ro,ufstype=nextstep /mnt</code></p>
+<p>**I have not specifically tested this part of the procedure yet, as
+my CD was already dumped. If the above command does not work for you,
+you can dump the CD over the network to the NFS share (see step 11 for
+exporting the filesystem) from a machine that can mount the disc.*</p>
+<ol start="7" type="1">
+<li>Copy the contents of the CD you mounted in the previous step to the
+directory you created in Step 5.</li>
+</ol>
+<p><code># cp -a /mnt/* /export/installcd</code></p>
+<ol start="8" type="1">
+<li>Symbolically link the Sun boot file to the /tftpboot directory,
+where the name is your Sun’s IP address represented in hexadecimal
+followed by your platform group. (If you don’t know how to do this,
+please see Appendix B-iv. If you don’t know your platform group, please
+refer to Appendix B-i.)</li>
+</ol>
+<p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
+<ol start="9" type="1">
+<li>Create or modify the /etc/bootptab file.</li>
+</ol>
+<pre><code>/etc/bootptab:
+installclient:\
+:ht=ether:\
+:ha=080020C0FFEE:\
+:sm=255.255.255.0:\
+:lg=&lt;server ip address&gt;:\
+:ip=192.168.0.10:\
+:hn=installclient:\
+:bf=C0A8000A.SUN4M:\
+:bs=auto:\
+:rp=/export/installcd/:\
+:vm=auto:</code></pre>
+<ol start="10" type="1">
+<li>Create or modify the /etc/bootparams file.</li>
+</ol>
+<pre><code>/etc/bootparams:
+installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private</code></pre>
+<ol start="11" type="1">
+<li>Add the location of the copied install CD to /etc/exports
+(remembering to execute <code>shareall</code> afterward).</li>
+</ol>
+<pre><code>/etc/dfs/dfstab:
+share -F nfs -o root=&quot;&quot; /export/installcd</code></pre>
 <ol start="12" type="1">
+<li>Restart all services listed in Step 1.</li>
+</ol>
+<p>**If you enabled tftpd and/or bootpd, be sure to restart inetd.*</p>
+<ol start="13" type="1">
 <li>If all works out, at this point you should be able to tell the Sun
 to boot from the network and it’ll boot into the install CD.</li>
 </ol>
@@ -1010,26 +1102,26 @@ OpenBSD</td>
 </table>
 <h2 id="b-iii.-useful-openboot-settings"><em>B-iii. Useful OpenBoot
 settings</em></h2>
-<h3 id="b-ii-a.-diag-switch">B-ii-a. diag-switch?</h3>
+<h3 id="b-iii-a.-diag-switch">B-iii-a. diag-switch?</h3>
 <p>This determines if the system goes through an extended self-test
 during startup. It also sets the default boot device to the network by
 default while this setting is set to true. It will be set to true by
 default every time you turn on your system on if the timekeeper battery
 is dead. I would recommend setting this to false to shorten the time it
 takes to subsequently reboot.</p>
-<h3 id="b-ii-b.-auto-boot">B-ii-b. auto-boot?</h3>
+<h3 id="b-iii-b.-auto-boot">B-iii-b. auto-boot?</h3>
 <p>This determines if the system tries to auto-boot upon startup. This
 is set to true by default. It’s a matter of personal preference whether
 it’s enabled or not. I prefer to boot to the OpenBoot prompt and then
 choose my boot device from there. Be aware this setting will be largely
 inconsequential when you cold boot the system if the timekeeper battery
 is dead.</p>
-<h3 id="b-ii-c.-boot-device">B-ii-c. boot-device</h3>
+<h3 id="b-iii-c.-boot-device">B-iii-c. boot-device</h3>
 <p>This controls what the default setting is when the boot command is
 issued with no arguments. The default is for it to try booting from disk
 first and then from the network. Like auto-boot? It’s a largely
 inconsequential setting if your timekeeper battery is dead.</p>
-<h3 id="b-ii-d.-output-device">B-ii-d. output-device</h3>
+<h3 id="b-iii-d.-output-device">B-iii-d. output-device</h3>
 <p>I put this here because sometimes you don’t want the default output
 device to be what the firmware defaults to, or you want to change
 settings for the default output device. This setting allows you to
@@ -1037,8 +1129,10 @@ specify the default output device (generally screen or ttya by default
 depending on if you have a keyboard attached or not) and any settings
 for said output device (I set my framebuffer to run at 1024x768x60 using
 this setting, for instance).</p>
-<h2 id="b-iv.-using-lofiadm-to-mount-iso-images."><em>B-iv. Using
-lofiadm to mount iso images.</em></h2>
+<h2 id="b-iv.-working-with-iso-files"><em>B-iv. Working with iso
+files</em></h2>
+<h3 id="b-iv-a.-using-lofiadm-to-mount-iso-images.-solaris">B-iv-a.
+Using lofiadm to mount iso images. (Solaris)</h3>
 <p>In some versions of Solaris (I’ve tested with Solaris 10, but it may
 exist in other versions as well) there exists the lofiadm utility. This
 exists as a way to work with loopback files (disc/k image files). For
@@ -1056,6 +1150,18 @@ that the iso file was added to. You can then mount the device like so
 <p><code># mount -F hsfs -o ro /dev/lofi/n /mnt</code></p>
 <p>You can also combine both commands together:</p>
 <p><code># mount -F hsfs -o ro $(lofiadm -a /path/to/image.iso) /mnt</code></p>
+<h3
+id="b-iv-b.-using-vnconfig-to-mount-iso-images.-netbsdopenbsd">B-iv-b.
+Using vnconfig to mount iso images. (NetBSD/OpenBSD)</h3>
+<p>To mount cdrom images in NetBSD and OpenBSD, you will want to use
+vnconfig. To create a device file that is linked to your image, run the
+following:</p>
+<p><code># vnconfig vnd0 /path/to/image.iso</code></p>
+<p>Then it will be possible to mount this device as you would a normal
+cdrom:</p>
+<p><code># mount -t cd9660 /dev/vnd0a /mnt</code></p>
+<p>Once that is finished, you may work with the image as you would any
+other cdrom filesystem.</p>
 <h2 id="b-v.-naming-your-tftp-boot-file."><em>B-v. Naming your tftp boot
 file.</em></h2>
 <p>This is a short and simple guide for how to name your Sun’s tftp boot
