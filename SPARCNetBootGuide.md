@@ -280,7 +280,7 @@ swap /tmp tmp rw 0 0
 
 ## III. NeXTSTEP/OPENSTEP Diskful Install
 ## *III-a. NetBSD/OpenBSD*
-1. Ensure you have the following services enabled in your rc.conf:
+1. Ensure you have the following services enabled:
 
 - rarpd
 - bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
@@ -319,11 +319,11 @@ swap /tmp tmp rw 0 0
 
 `# cp -a /mnt/* /export/installcd`
 
-7. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+8. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
 `# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
 
-8. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
+9. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
 
 ```
 /etc/dhcpd.conf:
@@ -356,25 +356,110 @@ installclient:\
 :vm=auto:
 ```
 
-9. Create or modify the /etc/bootparams file.
+10. Create or modify the /etc/bootparams file.
 
 ```
 /etc/bootparams:
 installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
 ```
 
-10. Add the location of the copied install CD to /etc/exports.
+11. Add the location of the copied install CD to /etc/exports.
 
 ```
 /etc/exports:
 /export/installcd -mapall=root -alldirs
 ```
 
-11. Restart all services listed in Step 1.
+12. Restart all services listed in Step 1.
 
 **If you enabled tftpd and/or bootpd, be sure to restart inetd.*
 
-12. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+13. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+
+`ok boot net`
+
+## *III-b. Solaris*
+1. Ensure you have the following services enabled:
+
+- rarpd
+- bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
+- tftpd (part of inetd, enabled by uncommenting the tftpd line in /etc/inetd.conf)
+- bootps (part of inetd, enabled by uncommenting the bootps line in /etc/inetd.conf) or dhcpd
+- nfs_server (in addition to rpcbind, mountd, lockd, and statd)
+
+2. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+
+```
+/etc/ethers:
+08:00:20:c0:ff:ee installclient
+```
+
+3. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+
+```
+/etc/hosts:
+...
+192.168.0.10 installclient
+```
+
+4. Make the /tftpboot directory if it doesn't already exist.
+
+`# mkdir /tftpboot`
+
+5. Make a directory where you wish to put the contents of the install CD.
+
+`# mkdir -p /export/installcd`
+
+6. Mount the install CD.*
+
+`# mount -F ufs -o ro,ufstype=nextstep /mnt`
+
+**I have not specifically tested this part of the procedure yet, as my CD was already dumped. If the above command does not work for you, you can dump the CD over the network to the NFS share (see step 11 for exporting the filesystem) from a machine that can mount the disc.*
+
+7. Copy the contents of the CD you mounted in the previous step to the directory you created in Step 5.
+
+`# cp -a /mnt/* /export/installcd`
+
+8. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+
+`# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
+
+9. Create or modify the /etc/bootptab file.
+
+```
+/etc/bootptab:
+installclient:\
+:ht=ether:\
+:ha=080020C0FFEE:\
+:sm=255.255.255.0:\
+:lg=<server ip address>:\
+:ip=192.168.0.10:\
+:hn=installclient:\
+:bf=C0A8000A.SUN4M:\
+:bs=auto:\
+:rp=/export/installcd/:\
+:vm=auto:
+```
+
+10. Create or modify the /etc/bootparams file.
+
+```
+/etc/bootparams:
+installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
+```
+
+11. Add the location of the copied install CD to /etc/exports (remembering to execute `shareall` afterward).
+
+```
+/etc/dfs/dfstab:
+share -F nfs -o root="" /export/installcd
+```
+
+12. Restart all services listed in Step 1.
+
+**If you enabled tftpd and/or bootpd, be sure to restart inetd.*
+
+13. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
 
 `ok boot net`
 
@@ -523,21 +608,23 @@ This is a compatibility matrix for operating systems on Sun systems. This inform
 
 ## *B-iii. Useful OpenBoot settings*
 
-### B-ii-a. diag-switch?
+### B-iii-a. diag-switch?
 This determines if the system goes through an extended self-test during startup. It also sets the default boot device to the network by default while this setting is set to true. It will be set to true by default every time you turn on your system on if the timekeeper battery is dead. I would recommend setting this to false to shorten the time it takes to subsequently reboot.
 
-### B-ii-b. auto-boot?
+### B-iii-b. auto-boot?
 This determines if the system tries to auto-boot upon startup. This is set to true by default. It's a matter of personal preference whether it's enabled or not. I prefer to boot to the OpenBoot prompt and then choose my boot device from there. Be aware this setting will be largely inconsequential when you cold boot the system if the timekeeper battery is dead.
 
-### B-ii-c. boot-device
+### B-iii-c. boot-device
 
 This controls what the default setting is when the boot command is issued with no arguments. The default is for it to try booting from disk first and then from the network. Like auto-boot? It's a largely inconsequential setting if your timekeeper battery is dead.
 
-### B-ii-d. output-device
+### B-iii-d. output-device
 
 I put this here because sometimes you don't want the default output device to be what the firmware defaults to, or you want to change settings for the default output device. This setting allows you to specify the default output device (generally screen or ttya by default depending on if you have a keyboard attached or not) and any settings for said output device (I set my framebuffer to run at 1024x768x60 using this setting, for instance).
 
-## *B-iv. Using lofiadm to mount iso images.*
+## *B-iv. Working with iso files*
+
+### B-iv-a. Using lofiadm to mount iso images. (Solaris)
 
 In some versions of Solaris (I've tested with Solaris 10, but it may exist in other versions as well) there exists the lofiadm utility. This exists as a way to work with loopback files (disc/k image files). For the purposes of this guide, we will be looking at using it to mount CD images.
 
@@ -556,6 +643,18 @@ The output of either of these commands will return the lofi device that the iso 
 You can also combine both commands together:
 
 `# mount -F hsfs -o ro $(lofiadm -a /path/to/image.iso) /mnt`
+
+### B-iv-b. Using vnconfig to mount iso images. (NetBSD/OpenBSD)
+
+To mount cdrom images in NetBSD and OpenBSD, you will want to use vnconfig. To create a device file that is linked to your image, run the following:
+
+`# vnconfig vnd0 /path/to/image.iso`
+
+Then it will be possible to mount this device as you would a normal cdrom:
+
+`# mount -t cd9660 /dev/vnd0a /mnt`
+
+Once that is finished, you may work with the image as you would any other cdrom filesystem.
 
 ## *B-v. Naming your tftp boot file.*
 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
@@ -597,6 +696,7 @@ All cited works are also linked in the document.
 [^a]: [Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
 
 [^b]: [Installing Solaris Over the Network - hosted on tenox.pdp-11.ru](http://tenox.pdp-11.ru/os/sunos_solaris/sparc/Installing%20Solaris%20Over%20The%20Network.html)
+
 [^c]: [FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid](http://www.obsolyte.com/sunFAQ/faq_nvram.html)
 
 [^d]: [SunOS 4.1 Diskless Installation Guide](https://www.panix.com/~rawallis/sunos41_diskless.html)
