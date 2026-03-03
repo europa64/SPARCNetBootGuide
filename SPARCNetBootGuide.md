@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 1*
+## *Revision 2*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -21,11 +21,14 @@ If you have all of those things, feel free to proceed to whichever section is ap
 
 ## *I-a. NetBSD/OpenBSD* [^c]
 
-1. Ensure you have the following services enabled in your rc.conf:
+1. Ensure you have the following services enabled:
+
 - rarpd
-- bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
-- tftpd (part of inetd, enabled by uncommenting the tftpd line in /etc/inetd.conf)
-- nfs_server (in addition to rpcbind, mountd, lockd, and statd)
+- bootparams
+- tftpd
+- bootps or dhcpd
+- nfs services
+
 2. These services are also in /etc/inetd.conf and may be useful to uncomment (IF you are on a trusted network):
 - ftp
 - telnet
@@ -33,6 +36,7 @@ If you have all of those things, feel free to proceed to whichever section is ap
 - rsh
 - rexec
 - time
+
 3. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
   
 ```
@@ -221,7 +225,78 @@ swap /tmp tmp rw 0 0
 23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
 ## II. Solaris Diskful Install 
-## *II-a. Solaris* [^b]
+## *II-a NetBSD/OpenBSD*
+1. Ensure you have the following services enabled:
+
+- rarpd
+- bootparams
+- tftpd
+- bootps or dhcpd
+- nfs services
+
+2. Create a directory where you want the server to place the Solaris install files.
+
+`# mkdir -p /export/Solaris`
+
+3. Mount the install CD
+   
+`# mount -o ro /dev/cd0 /mnt`
+
+4. Copy the contents of the CD to the directory created in step 1 
+
+`# cp -a /mnt/* /export/Solaris/`
+
+5. I have yet to test this method on multi-disc install sets, please do notify me if you have a verified method of adding a second disc to the install source directory.
+
+6. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+
+```
+/etc/ethers:
+8:0:20:c0:ff:ee installclient
+```
+
+7. Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+
+```
+/etc/hosts:
+...
+192.168.0.10 installclient
+```
+
+8. Make the /tftpboot directory if it doesn't already exist.
+
+`# mkdir /tftpboot`
+
+9. Create or modify the /etc/bootparams file.
+
+```
+/etc/bootparams:
+installclient root=install.server.ip.address:/export/Solaris/Solaris_<version>/Tools/Boot install=install.server.ip.address:/export/Solaris
+```
+
+10. Add the location of the copied install CD to /etc/exports.
+
+```
+/etc/exports:
+/export/Solaris /export/Solaris/Solaris_<version>/Tools/Boot -mapall=root
+```
+
+11. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+
+```
+# cp -p /usr/exports/Solaris/Solaris_<version>/Tools/Boot/usr/platform/<platform group>/lib/fs/nfs/inetboot /tftpboot/inetboot_<platform group>_sol<version>
+# ln -s  /tftpboot/C0A8000A.<platform group>
+```
+
+12. Restart all services listed in Step 1.
+
+**If you enabled tftpd and/or bootpd, be sure to restart inetd.*
+
+13. If everything went according to plan, you can tell your Sun workstation to boot from the network and it will boot into the Solaris installer.
+
+`ok boot net`
+
+## *II-b. Solaris* [^b]
 1. Create a directory where you want the server to place the Solaris install files.
 
 `# mkdir /var/Solaris`
@@ -283,10 +358,10 @@ swap /tmp tmp rw 0 0
 1. Ensure you have the following services enabled:
 
 - rarpd
-- bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
-- tftpd (part of inetd, enabled by uncommenting the tftpd line in /etc/inetd.conf)
-- bootps (part of inetd, enabled by uncommenting the bootps line in /etc/inetd.conf) or dhcpd
-- nfs_server (in addition to rpcbind, mountd, lockd, and statd)
+- bootparams
+- tftpd
+- bootps or dhcpd
+- nfs services
 
 2. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
 
@@ -382,10 +457,10 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 1. Ensure you have the following services enabled:
 
 - rarpd
-- bootparams (called bootparamd in rc.conf, but refered to as bootparams elsewhere)
-- tftpd (part of inetd, enabled by uncommenting the tftpd line in /etc/inetd.conf)
-- bootps (part of inetd, enabled by uncommenting the bootps line in /etc/inetd.conf) or dhcpd
-- nfs_server (in addition to rpcbind, mountd, lockd, and statd)
+- bootparams
+- tftpd
+- bootps or dhcpd
+- nfs services
 
 2. Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
 
@@ -420,7 +495,7 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 `# cp -a /mnt/* /export/installcd`
 
-8. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+8. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
 `# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
 
