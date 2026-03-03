@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 2*
+## *Revision 2.1*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -354,6 +354,9 @@ installclient root=install.server.ip.address:/export/Solaris/Solaris_<version>/T
 `ok boot net`
 
 ## III. NeXTSTEP/OPENSTEP Diskful Install
+
+*Note: This operating system will only run on specific configurations of specific sun4m machines, namely the SPARCstation 4, SPARCstation 5 with microSPARC-II, SPARCstation 10 with SuperSPARC, and SPARCstation 20 with SuperSPARC. HyperSPARC CPU configurations will not work, and I have no data to suggest that the microSPARC-based lunchbox SPARCstations (SPARCclassic, LX, X, and ZX) will work either.
+
 ## *III-a. NetBSD/OpenBSD*
 1. Ensure you have the following services enabled:
 
@@ -394,9 +397,10 @@ installclient root=install.server.ip.address:/export/Solaris/Solaris_<version>/T
 
 `# cp -a /mnt/* /export/installcd`
 
-8. Symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+8. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
-`# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
+`# cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep`
+`# ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M`
 
 9. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
 
@@ -497,7 +501,8 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 8. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
-`# ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M`
+`# cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep`
+`# ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M`
 
 9. Create or modify the /etc/bootptab file.
 
