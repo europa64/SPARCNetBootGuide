@@ -175,7 +175,7 @@
 <h1
 id="jumpstarting-with-a-sparc-netbooting-sun-workstations">Jumpstarting
 With a SPARC: Netbooting Sun Workstations</h1>
-<h2 id="revision-2"><em>Revision 2</em></h2>
+<h2 id="revision-2.1"><em>Revision 2.1</em></h2>
 <h2 id="foreword">Foreword</h2>
 <p>This document was compiled by me (Europa) in 2024 and contains a
 combination of information from others that I have placed here for
@@ -582,6 +582,12 @@ installer.</li>
 <p><code>ok boot net</code></p>
 <h2 id="iii.-nextstepopenstep-diskful-install">III. NeXTSTEP/OPENSTEP
 Diskful Install</h2>
+<p>*Note: This operating system will only run on specific configurations
+of specific sun4m machines, namely the SPARCstation 4, SPARCstation 5
+with microSPARC-II, SPARCstation 10 with SuperSPARC, and SPARCstation 20
+with SuperSPARC. HyperSPARC CPU configurations will not work, and I have
+no data to suggest that the microSPARC-based lunchbox SPARCstations
+(SPARCclassic, LX, X, and ZX) will work either.</p>
 <h2 id="iii-a.-netbsdopenbsd"><em>III-a. NetBSD/OpenBSD</em></h2>
 <ol type="1">
 <li>Ensure you have the following services enabled:</li>
@@ -625,13 +631,14 @@ directory you created in Step 5.</li>
 </ol>
 <p><code># cp -a /mnt/* /export/installcd</code></p>
 <ol start="8" type="1">
-<li>Symbolically link the Sun boot file to the /tftpboot directory,
-where the name is your Sun’s IP address represented in hexadecimal
-followed by your platform group. (If you don’t know how to do this,
-please see Appendix B-iv. If you don’t know your platform group, please
-refer to Appendix B-i.)</li>
+<li>Copy the tftp booter to /tftpboot and symbolically link the Sun boot
+file to the /tftpboot directory, where the name is your Sun’s IP address
+represented in hexadecimal followed by your platform group. (If you
+don’t know how to do this, please see Appendix B-iv. If you don’t know
+your platform group, please refer to Appendix B-i.)</li>
 </ol>
-<p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
+<p><code># cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep</code>
+<code># ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M</code></p>
 <ol start="9" type="1">
 <li>Create or modify the /etc/dhcpd.conf or /etc/bootptab file.</li>
 </ol>
@@ -733,7 +740,8 @@ represented in hexadecimal followed by your platform group. (If you
 don’t know how to do this, please see Appendix B-iv. If you don’t know
 your platform group, please refer to Appendix B-i.)</li>
 </ol>
-<p><code># ln -s /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/C0A8000A.SUN4M</code></p>
+<p><code># cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep</code>
+<code># ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M</code></p>
 <ol start="9" type="1">
 <li>Create or modify the /etc/bootptab file.</li>
 </ol>
