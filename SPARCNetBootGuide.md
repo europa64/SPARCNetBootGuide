@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 2.1*
+## *Revision 2.2*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -385,24 +385,33 @@ installclient root=install.server.ip.address:/export/Solaris/Solaris_<version>/T
 
 `# mkdir /tftpboot`
 
-5. Make a directory where you wish to put the contents of the install CD.
+5. Add the location of the copied install CD to /etc/exports and reload mountd.
+
+```
+/etc/exports:
+/export/installcd -mapall=root -alldirs
+```
+`# service mountd reload`
+
+6. Make a directory where you wish to put the contents of the install CD.
 
 `# mkdir -p /export/installcd`
 
-6. Mount the install CD.
+7. **ON A LINUX SYSTEM** Mount the install CD and the directory created in step 5.
 
-`# mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt`
+`# mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt/cdrom`
+`# mount install.server.ip.address:/export/installcd /mnt/nfs`
 
-7. Copy the contents of the CD you mounted in the previous step to the directory you created in Step 5.
+8. **ON A LINUX SYSTEM** Copy the contents of the CD to the NFS mount.
 
-`# cp -a /mnt/* /export/installcd`
+`# cp -a /mnt/cdrom/* /mnt/nfs/`
 
-8. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+9. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
 `# cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep`
 `# ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M`
 
-9. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
+10. Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
 
 ```
 /etc/dhcpd.conf:
@@ -435,25 +444,22 @@ installclient:\
 :vm=auto:
 ```
 
-10. Create or modify the /etc/bootparams file.
+11. Create or modify the /etc/bootparams file.
 
 ```
 /etc/bootparams:
 installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
 ```
 
-11. Add the location of the copied install CD to /etc/exports.
+12. `touch .profile` in the NFS mount root to create it, if it does not already exist.
 
-```
-/etc/exports:
-/export/installcd -mapall=root -alldirs
-```
+`# touch /export/installcd/.profile`
 
-12. Restart all services listed in Step 1.
+13. Restart all services listed in Step 1.
 
 **If you enabled tftpd and/or bootpd, be sure to restart inetd.*
 
-13. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+14. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
 
 `ok boot net`
 
@@ -489,22 +495,33 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 `# mkdir -p /export/installcd`
 
-6. Mount the install CD.*
+5. Add the location of the copied install CD to /etc/exports and update the NFS exports.
 
-`# mount -F ufs -o ro,ufstype=nextstep /mnt`
+```
+/etc/exports:
+/export/installcd -mapall=root -alldirs
+```
+`# shareall`
 
-**I have not specifically tested this part of the procedure yet, as my CD was already dumped. If the above command does not work for you, you can dump the CD over the network to the NFS share (see step 11 for exporting the filesystem) from a machine that can mount the disc.*
+6. Make a directory where you wish to put the contents of the install CD.
 
-7. Copy the contents of the CD you mounted in the previous step to the directory you created in Step 5.
+`# mkdir -p /export/installcd`
 
-`# cp -a /mnt/* /export/installcd`
+7. **ON A LINUX SYSTEM** Mount the install CD and the directory created in step 5.
 
-8. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+`# mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt/cdrom`
+`# mount install.server.ip.address:/export/installcd /mnt/nfs`
+
+8. **ON A LINUX SYSTEM** Copy the contents of the CD to the NFS mount.
+
+`# cp -a /mnt/cdrom/* /mnt/nfs/`
+
+9. Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
 
 `# cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep`
 `# ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M`
 
-9. Create or modify the /etc/bootptab file.
+10. Create or modify the /etc/bootptab file.
 
 ```
 /etc/bootptab:
@@ -521,25 +538,22 @@ installclient:\
 :vm=auto:
 ```
 
-10. Create or modify the /etc/bootparams file.
+11. Create or modify the /etc/bootparams file.
 
 ```
 /etc/bootparams:
 installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
 ```
 
-11. Add the location of the copied install CD to /etc/exports (remembering to execute `shareall` afterward).
+12. `touch .profile` in the NFS mount root to create it, if it does not already exist.
 
-```
-/etc/dfs/dfstab:
-share -F nfs -o root="" /export/installcd
-```
+`# touch /export/installcd/.profile`
 
-12. Restart all services listed in Step 1.
+13. Restart all services listed in Step 1.
 
 **If you enabled tftpd and/or bootpd, be sure to restart inetd.*
 
-13. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+14. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
 
 `ok boot net`
 
