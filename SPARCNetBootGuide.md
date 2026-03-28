@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 2.2*
+## *Revision 2.3*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -457,7 +457,7 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 13. Restart all services listed in Step 1.
 
-**If you enabled tftpd and/or bootpd, be sure to restart inetd.*
+*If you enabled tftpd and/or bootpd, be sure to restart inetd.*
 
 14. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
 
@@ -551,7 +551,7 @@ installclient root=install.server.ip.address:/export/installcd private=install.s
 
 13. Restart all services listed in Step 1.
 
-**If you enabled tftpd and/or bootpd, be sure to restart inetd.*
+*If you enabled tftpd and/or bootpd, be sure to restart inetd.*
 
 14. If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
 
