@@ -175,7 +175,7 @@
 <h1
 id="jumpstarting-with-a-sparc-netbooting-sun-workstations">Jumpstarting
 With a SPARC: Netbooting Sun Workstations</h1>
-<h2 id="revision-2.3"><em>Revision 2.3</em></h2>
+<h2 id="revision-2.4"><em>Revision 2.4</em></h2>
 <h2 id="foreword">Foreword</h2>
 <p>This document was compiled by me (Europa) in 2024 and contains a
 combination of information from others that I have placed here for
@@ -488,7 +488,7 @@ the IP address you wish to assign your client</li>
 <li>Create or modify the /etc/bootparams file.</li>
 </ol>
 <pre><code>/etc/bootparams:
-installclient root=install.server.ip.address:/export/Solaris/Solaris_&lt;version&gt;/Tools/Boot install=install.server.ip.address:/export/Solaris</code></pre>
+installclient root=install.server.ip.address:/export/Solaris/Solaris_&lt;version&gt;/Tools/Boot install=install.server.ip.address:/export/Solaris boottype=:in   rootopts=:rsize=32768</code></pre>
 <ol start="10" type="1">
 <li>Add the location of the copied install CD to /etc/exports.</li>
 </ol>
