@@ -175,7 +175,7 @@
 <h1
 id="jumpstarting-with-a-sparc-netbooting-sun-workstations">Jumpstarting
 With a SPARC: Netbooting Sun Workstations</h1>
-<h2 id="revision-2.5"><em>Revision 2.5</em></h2>
+<h2 id="revision-2.6"><em>Revision 2.6</em></h2>
 <h2 id="foreword">Foreword</h2>
 <p>This document was compiled by me (Europa) in 2024 and contains a
 combination of information from others that I have placed here for
@@ -824,10 +824,13 @@ the IDPROM data:</p>
 <p>Byte(s) Contents 0 Always 01 1 First byte of hostid (machine type -
 for ease of use you can use real-machine-type, but that may not work on
 older boot proms. DO NOT SET THIS TO A MACHINE TYPE THAT IS NOT YOUR
-MACHINE’S TYPE) 2-7 6 byte ethernet address (first three bytes are 08,
-00, 20) 8-b Date of manufacture (all 0s, doesn’t matter) c Second byte
-of hostid d Third byte of hostid e Fourth byte of hostid f IDPROM
-checksum (bitwise xor of bytes 0-e)</p>
+MACHINE’S TYPE!! If you are unsure, please refer to the machine type ID
+table below (A-ii).) 2-7 6 byte ethernet address (first three bytes are
+the OUI (Oragnizationally Unique Identifier), if you are unsure of what
+your OUI is, please refer to the OUI table below (A-iV).) 8-b Date of
+manufacture (all 0s, doesn’t matter) c Second byte of hostid d Third
+byte of hostid e Fourth byte of hostid f IDPROM checksum (bitwise xor of
+bytes 0-e)</p>
 <h2 id="a-ii.-a-crash-course-in-idprom-programming"><em>A-ii. A crash
 course in IDPROM programming</em></h2>
 <p>To program your ethernet address to 8:0:20:c0:ff:ee and your hostid
@@ -973,7 +976,39 @@ Type Listing</em></h2>
 </tr>
 <tr>
 <td>80</td>
-<td>SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra, Blade</td>
+<td>SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra</td>
+</tr>
+<tr>
+<td>83</td>
+<td>Blade, Sun Fire V-series (UltraSPARC)</td>
+</tr>
+<tr>
+<td>84</td>
+<td>Sun Fire T-series</td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-iv.-ethernet-address-ouis"><em>A-iv. Ethernet Address
+OUIs:</em></h2>
+<table>
+<thead>
+<tr>
+<th>OUI</th>
+<th>Typical Machines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>08:00:20</td>
+<td>Most machines Ultra and before</td>
+</tr>
+<tr>
+<td>00:03:BA</td>
+<td>Mostly Sun Blades and Fire V-series</td>
+</tr>
+<tr>
+<td>00:14:4F</td>
+<td>Mostly Sun Fire T-series</td>
 </tr>
 </tbody>
 </table>
@@ -1164,32 +1199,32 @@ to 5.9)</td>
 </tr>
 <tr>
 <td>sun4d</td>
-<td>Solaris 2.2 - 8</td>
+<td>Solaris 2.2 - 8, Linux (with patches)</td>
 </tr>
 <tr>
 <td>sun4m</td>
 <td>SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up
 to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs
-only)</td>
+only), Linux (with patches)</td>
 </tr>
 <tr>
 <td>sun4u</td>
 <td>Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I),
-OpenBSD</td>
+OpenBSD, Linux</td>
 </tr>
 <tr>
 <td>sun4v</td>
-<td>Solaris 10 3/05 HW2 and newer and OpenBSD</td>
+<td>Solaris 10 3/05 HW2 and newer and OpenBSD, Linux</td>
 </tr>
 <tr>
 <td>SPARCserver 600MP</td>
 <td>SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD
-(up to 5.9)</td>
+(up to 5.9), Linux (with patches)</td>
 </tr>
 <tr>
 <td>UltraSPARC I</td>
 <td>Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I),
-OpenBSD</td>
+OpenBSD, Linux</td>
 </tr>
 </tbody>
 </table>
