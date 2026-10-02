@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 2.5*
+## *Revision 2.6*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -568,9 +568,9 @@ Contents
 0
 Always 01
 1
-First byte of hostid (machine type - for ease of use you can use real-machine-type, but that may not work on older boot proms. DO NOT SET THIS TO A MACHINE TYPE THAT IS NOT YOUR MACHINE'S TYPE)
+First byte of hostid (machine type - for ease of use you can use real-machine-type, but that may not work on older boot proms. DO NOT SET THIS TO A MACHINE TYPE THAT IS NOT YOUR MACHINE'S TYPE!! If you are unsure, please refer to the machine type ID table below (A-ii).)
 2-7
-6 byte ethernet address (first three bytes are 08, 00, 20)
+6 byte ethernet address (first three bytes are the OUI (Oragnizationally Unique Identifier), if you are unsure of what your OUI is, please refer to the OUI table below (A-iV).)
 8-b
 Date of manufacture (all 0s, doesn't matter)
 c
@@ -638,7 +638,17 @@ Reset the machine with the `reset` command and it should reboot with the new eth
 | 61 | 4/e |
 | 71 | 4/6x0 |
 | 72 | SPARCstation 10 or SPARCstation 20 |
-| 80 | SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra, Blade |
+| 80 | SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra |
+| 83 | Blade, Sun Fire V-series (UltraSPARC) |
+| 84 | Sun Fire T-series |
+
+## *A-iv. Ethernet Address OUIs:*
+
+| OUI | Typical Machines |
+|---|---|
+| 08:00:20 | Most machines Ultra and before |
+| 00:03:BA | Mostly Sun Blades and Fire V-series |
+| 00:14:4F | Mostly Sun Fire T-series |
 
 ## Appendix B: Platform Groups, useful OpenBoot settings, and other errata
 ## *B-i. Platform Group listing:* [^a]
@@ -690,12 +700,12 @@ This is a compatibility matrix for operating systems on Sun systems. This inform
 | Sun-3 | SunOS 3.0 - 4.1.1_U1, NetBSD (Tier II), OpenBSD (up to 2.9) |
 | sun4 | SunOS 4.0.3e - 4.1.4, Solaris 2.0 - 7, NetBSD (Tier II), OpenBSD (up to 5.9) |
 | sun4c | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 7, NetBSD (Tier II), OpenBSD (up to 5.9) |
-| sun4d | Solaris 2.2 - 8 |
-| sun4m | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs only) |
-| sun4u | Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD |
-| sun4v | Solaris 10 3/05 HW2 and newer and OpenBSD |
-| SPARCserver 600MP | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD (up to 5.9) |
-| UltraSPARC I | Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD |
+| sun4d | Solaris 2.2 - 8, Linux (with patches) |
+| sun4m | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs only), Linux (with patches) |
+| sun4u | Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD, Linux |
+| sun4v | Solaris 10 3/05 HW2 and newer and OpenBSD, Linux |
+| SPARCserver 600MP | SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD (up to 5.9), Linux (with patches) |
+| UltraSPARC I | Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD, Linux |
 
 ## *B-iii. Useful OpenBoot settings*
 
