@@ -175,7 +175,7 @@
 <h1
 id="jumpstarting-with-a-sparc-netbooting-sun-workstations">Jumpstarting
 With a SPARC: Netbooting Sun Workstations</h1>
-<h2 id="revision-2.6"><em>Revision 2.6</em></h2>
+<h2 id="revision-2.6.1"><em>Revision 2.6.1</em></h2>
 <h2 id="foreword">Foreword</h2>
 <p>This document was compiled by me (Europa) in 2024 and contains a
 combination of information from others that I have placed here for
@@ -463,6 +463,12 @@ install files.</li>
 <li>Copy the contents of the CD to the directory created in step 1</li>
 </ol>
 <p><code># cp -a /mnt/* /export/Solaris/</code></p>
+<p><em>Note for Solaris 2.6 and 7: There are hidden files on the root of
+the CD-ROM that may not be copied by the above command and required for
+a successful boot of the installer. Run
+<code>ls -a /export/Solaris</code> and compare it with the listing
+output by <code>ls -a /mnt</code>. If there are missing hidden files or
+folders, copy them individually using <code>cp -a</code>.</em></p>
 <ol start="5" type="1">
 <li><p>I have yet to test this method on multi-disc install sets, please
 do notify me if you have a verified method of adding a second disc to
