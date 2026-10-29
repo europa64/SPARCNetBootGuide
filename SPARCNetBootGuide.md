@@ -1,5 +1,5 @@
 # Jumpstarting With a SPARC: Netbooting Sun Workstations
-## *Revision 2.6*
+## *Revision 2.6.1*
 ## Foreword
 This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the many administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aids with that effort.
 
@@ -221,7 +221,7 @@ swap /tmp tmp rw 0 0
 
 23. Reboot into multi-user mode this time. If everything was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should `halt` instead of reboot and then issue the `boot net` command at the OpenBoot "ok" prompt.)
 
-## II. Solaris Diskful Install 
+## II. Solaris Diskful Install
 ## *II-a NetBSD/OpenBSD*
 1. Ensure you have the following services enabled:
 
@@ -242,6 +242,8 @@ swap /tmp tmp rw 0 0
 4. Copy the contents of the CD to the directory created in step 1 
 
 `# cp -a /mnt/* /export/Solaris/`
+
+_Note for Solaris 2.6 and 7: There are hidden files on the root of the CD-ROM that may not be copied by the above command and required for a successful boot of the installer. Run `ls -a /export/Solaris` and compare it with the listing output by `ls -a /mnt`. If there are missing hidden files or folders, copy them individually using `cp -a`._
 
 5. I have yet to test this method on multi-disc install sets, please do notify me if you have a verified method of adding a second disc to the install source directory.
 
