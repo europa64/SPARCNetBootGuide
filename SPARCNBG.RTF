@@ -1,0 +1,530 @@
+{\rtf1\ansi \deff76\deflang1033{\fonttbl{\f1\froman\fcharset2\fprq2 Symbol;}{\f4\froman\fcharset0\fprq2 Times New Roman;}{\f11\fmodern\fcharset0\fprq1 Courier New;}{\f76\froman\fcharset0\fprq2 Century;}}
+{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;
+\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{\f76 \snext0 Normal;}{\s1\sb100\sa100 \b\f4\fs48\kerning36 \sbasedon0\snext1 heading 1;}{\s2\sb100\sa100 \b\f4\fs36 
+\sbasedon0\snext2 heading 2;}{\s3\sb100\sa100 \b\f4\fs27 \sbasedon0\snext3 heading 3;}{\*\cs10 \additive Default Paragraph Font;}{\*\cs15 \additive\i \sbasedon10 Emphasis;}{\s16\sb100\sa100 \f4 \sbasedon0\snext16 Normal (Web);}{\*\cs17 \additive\ul\cf2 
+\sbasedon10 Hyperlink;}{\s18\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 \f11\fs20 \sbasedon0\snext18 HTML Preformatted;}{\*\cs19 \additive\f11\fs20 \sbasedon10 HTML Code;}{\*\cs20 
+\additive\b \sbasedon10 Strong;}}{\info{\title Jumpstarting With a SPARC: Netbooting Sun Workstations}{\author europa}{\operator europa}{\creatim\yr2026\mo10\dy29\hr23\min56}{\revtim\yr2026\mo10\dy30\min12}{\version1}{\edmins6}{\nofpages0}{\nofwords0}
+{\nofchars0}{\vern49197}}\widowctrl\ftnbj\aenddoc\hyphcaps0\formshade \fet0\sectd \linex0\endnhere {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3
+\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}
+{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain \sb161\sa161 \f76 {
+\b\f4\fs48\kerning36 Jumpstarting With a SPARC: Netbooting Sun Workstations
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 Revision 3.6.2}{\b\f4\fs36 
+\par Foreword
+\par }\pard \sb100\sa100 {\f4 
+This document was compiled by me (Europa) in 2024 and contains a combination of information from others that I have placed here for posterity (and updated where applicable) and information based on my own experiences. I would like to thank the man
+y administrators and hobbyists that came before me and have made it possible for me to use and learn about my Sun systems in a manner that allows me to create this document through the recording of their knowledge. I would also like to specifically thank 
+NCommander and their community for helping me when limited documentation was available. I hope this document will survive for years to come and be passed from one hand to the next. Archival and documentation is important, and I hope that this document aid
+s with that effort.
+\par }{\i\f4 
+A note about inline citations: As I said, some of this guide is taken from other sources. To streamline citation of those sources, I have put letters in parentheses next to the appropriate section headings. These correspond to webpages referenced in Appen
+dix C. I do not wish to take credit for the work of others, and I believe firmly in crediting sources.}{\f4 
+\par }\pard \sb199\sa199 {\b\f4\fs36 Abstract
+\par }\pard \sb100\sa100 {\f4 If you're reading this document, it's likely that you have been brought here from a web search or someone linked it as an answe
+r to a question you or someone else posed. The purpose of this document is, first and foremost, to provide a consolidated resource for those looking to boot their Sun workstations from the network based on my findings. There are many reasons one may wish 
+to do this, including a lack of physical installation media or a lack of working removable media drives on the system one wishes to boot.
+\par This document will make a few assumptions, namely that you have a basic understanding of networking and Unix-like opera
+ting systems, as well as assuming that you have root access (either directly or via su) to the server system, and that you'll be working from a root shell. As I am limited by the hardware I have at my disposal, the procedures listed in this document have 
+been tested on a SPARCstation 5, an Ultra 1, and an Ultra 5. That being said, the basics of this document should hold true for any Sun system that can boot from the network in the same way that these systems can. I will primarily focus on booting from Net
+BSD (and OpenBSD where applicable) and Solaris. If you wish to apply these instructions to other platforms and operating systems, I have included the resources I pulled from as well as other useful resources in Appendix C.
+\par Before you proceed, you must have a few things prepared:
+\par }\pard \fi-360\sb120\sa120\tx720 {\f1\fs20 \'b7\tab }{\f4 A wired network. It does not need to be connected to the internet, although it may be beneficial for some client operating systems.
+\par }{\f1\fs20 \'b7\tab }{\f4 A system that can act as a server and a system that you wish to be your client. The server can be anything capable of wired networking and running an operating system capable of performing the tasks in this guide.
+\par }{\f1\fs20 \'b7\tab }{\f4 Your client's platform group. If you don't know this, please refer to Appendix B-i.
+\par }{\f1\fs20 \'b7\tab }{\f4 
+A programmed IDPROM and NVRAM on the client. Unless you have specifically ensured your timekeeper's battery has juice left, it's likely dead. If you need to program your timekeeper, refer to Appendix A. If you have all of those things, feel free to procee
+d to whichever section is applicable to your goals. E
+very network and configuration is different, and you may have to tweak these guides to meet your needs. I can say these worked on my machines but, as always with things like this, your mileage may vary. I make no guarantees about any of the stuff here oth
+er than that it has been tested by me to work. I, however, am an individual and only have so many resources at my disposal, so I cannot test every possible configuration. I will add more configurations with server and client operating systems as I test th
+em and, if anyone has their own configurations that they would like to add, feel free to do so on Github. Have fun and best of luck.
+\par }\pard \sb199\sa199 {\b\f4\fs36 I. SunOS 4 Diskless Install
+\par }{\b\i\f4\fs36 I-a. NetBSD/OpenBSD}{\b\f4\fs36  }{\b\f4\fs36\super 1}{\b\f4\fs36 
+\par }\pard \fi-360\sb120\sa120\tx720 {\f4 1.\tab Ensure you have the following services enabled:
+\par }{\f1\fs20 \'b7\tab }{\f4 rarpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootparams
+\par }{\f1\fs20 \'b7\tab }{\f4 tftpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootps or dhcpd
+\par }{\f1\fs20 \'b7\tab }{\f4 nfs services
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 2.\tab These services are also in /etc/inetd.conf and may be useful to uncomment (IF you are on a trusted network):
+\par }\pard \fi-360\sb120\sa120\tx720 {\f1\fs20 \'b7\tab }{\f4 ftp
+\par }{\f1\fs20 \'b7\tab }{\f4 telnet
+\par }{\f1\fs20 \'b7\tab }{\f4 rlogin
+\par }{\f1\fs20 \'b7\tab }{\f4 rsh
+\par }{\f1\fs20 \'b7\tab }{\f4 rexec
+\par }{\f1\fs20 \'b7\tab }{\f4 time
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 3.\tab Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/ethers:
+\par 08:00:20:00:07:EA client
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 4.\tab Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/hosts:
+\par ...
+\par 192.168.0.11 client
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 5.\tab Make the /tftpboot directory if it doesn't already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /tftpboot}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 6.\tab Make a directory where you wish to put the contents of the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /home/client}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 7.\tab Create or modify the /etc/bootparams file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/bootparams:
+\par installclient root=server:/home/client swap=server:/home/client/swap gateway=server:0xffffff00
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 8.\tab Add the location of the copied install CD to /etc/exports.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/exports:
+\par /home/client -alldirs -maproot=root
+\par }\pard \fi-360\li720\sb100\sa100\tx720 {\f4 9.\tab Restart (or start) all services listed in Step 1.
+\par 10.\tab Mount the SunOS 4.1.x CD
+\par }\pard \sb100\sa100 {\f11\fs20 # mount -t cd9660 -o ro /dev/cd0 /cdrom}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 11.\tab Set up the client's filesystem heirarchy and swap file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cd /home/client
+\par 
+\par # dd if=/dev/zero of=swap bs=<swap size in megabytes>m count=1
+\par 
+\par # mkdir -p usr/kvm
+\par 
+\par # tar -xvpf /cdrom/export/exec/proto_root_sunos_4_1_4
+\par 
+\par `# cd /home/client/usr
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 12.\tab Extract the common OS packages.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # for x in /cdrom/export/exec/sun4_sunos_4_1_4/*; do tar -xpf $x; done
+\par 
+\par # tar -xpf /cdrom/export/share/sunos_4_1_4/manual
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 13.\tab Install the architecture-specific packages. (If you don't know what platform group or architecture your system is, refer to Appendix B-i. For the purposes of demonstration, I'm using sun4m.)
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cd kvm
+\par 
+\par # tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/kvm
+\par 
+\par # tar -xpf /cdrom/export/exec/kvm/sun4m_sunos_4_1_4/sys
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 14.\tab Add the server and the client to the client's /etc/hosts file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 ./etc/hosts:
+\par <server ip address> server
+\par 192.168.0.11 client
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 15.\tab Create the client's /dev nodes.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cd dev
+\par 
+\par # sed -i 's|^PATH=|PATH=/sbin:|g' MAKEDEV
+\par 
+\par # ./MAKEDEV std
+\par 
+\par # ./MAKEDEV pty0
+\par 
+\par # ./MAKEDEV win
+\par 
+\par # cd ..
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 16.\tab Create the client's /etc/fstab file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 ./etc/fstab:
+\par server:/home/client / nfs rw 0 0
+\par server:/home/client/usr /usr nfs rw 0 0
+\par swap /tmp tmp rw 0 0
+\par }\pard \sb100\sa100 {\i\f4 (Special note: At this time it would be ideal to also uncomment the mount /tmp line in rc.local so that /tmp will be mounted and you can use X11 and OpenWindows, among other things.)}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 17.\tab Copy critical files to sbin and vmunix to the root directory.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cp usr/kvm/boot/* sbin
+\par 
+\par # cp usr/kvm/stand/sh sbin
+\par 
+\par # cp usr/bin/hostname sbin
+\par 
+\par # cp usr/kvm/stand/vmunix .
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 18.\tab Copy the tftp boot file to /tftpboot and symlink it to the proper name for your system. (If you don't know how to do this, refer to Appendix B-iv.)
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cp usr/kvm/stand/boot.sun4m /tftpboot
+\par 
+\par # cd /tftpboot
+\par 
+\par # ln -s boot.sun4m C0A8000B.SUN4M
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 19.\tab If all works out, at this point you should be able to tell the Sun to boot into single user mode from the network.
+\par }\pard \sb100\sa100 {\f11\fs20 ok boot net -s}{\f4 
+\par }\pard \sb240\sa240 {\b\i\f4\fs28 On the Sun:}{\b\f4\fs28 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 20.\tab Compile the source for the various utilities in the bigfs patch and put them in their proper places.
+\par }\pard \fi-360\sb120\sa120\tx720 {\f1\fs20 \'b7\tab }{\f4 /etc/dump
+\par }{\f1\fs20 \'b7\tab }{\f4 /etc/fsck
+\par }{\f1\fs20 \'b7\tab }{\f4 /usr/bin/df and /usr/5bin/df
+\par }{\f1\fs20 \'b7\tab }{\f4 /etc/fsirand
+\par }{\f1\fs20 \'b7\tab }{\f4 /etc/mkfs
+\par }{\f1\fs20 \'b7\tab }{\f4 /usr/etc/quotacheck
+\par }\pard \sb100\sa100 {\i\f4 (fsusageck.c will fail to compile but it doesn't seem to be necessary, as I don't actually find it anywhere in the system.)}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 21.\tab Apply the NFS Jumbo Patch.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cd /path/to/nfs/patch
+\par 
+\par # cp /usr/kvm/sys/`arch -k`/OBJ/nfs_client.o /usr/kvm/sys/`arch -k`/OBJ/nfs_client.old
+\par 
+\par `# cp `arch -k`/nfs_client.o /usr/kvm/sys/\\`arch -k`/OBJ/nfs_client.o
+\par 
+\par # cp /usr/kvm/sys/`arch -k`/OBJ/nfs_server.o /usr/kvm/sys/`arch -k`/OBJ/nfs_server.old
+\par 
+\par # cp `arch -k`/nfs_server.o /usr/kvm/sys/`arch -k`/OBJ/nfs_server.o
+\par 
+\par # cp /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.o /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.old
+\par 
+\par # cp `arch -k`/nfs_vnodeops.o /usr/kvm/sys/`arch -k`/OBJ/nfs_vnodeops.o
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 22.\tab Recompile the kernel.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # cd /sys/`arch -k`/conf
+\par 
+\par # cp GENERIC GENERIC.1
+\par 
+\par # config GENERIC.1
+\par 
+\par # cd ../GENERIC.1
+\par 
+\par # make
+\par 
+\par # cp /vmunix /vmunix.save
+\par 
+\par # cp vmunux /vmunix
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 23.\tab Reboot into multi-user mode this time. If everyt
+hing was done correctly it should boot fully and you can login as root without it panicking. (Note: if your default boot device is set to something other than net, you should }{\f11\fs20 halt}{\f4  instead of reboot and then issue the }{\f11\fs20 boot net
+}{\f4  command at the OpenBoot "ok" prompt.)
+\par }\pard \sb199\sa199 {\b\f4\fs36 II. Solaris Diskful Install
+\par }{\b\i\f4\fs36 II-a NetBSD/OpenBSD}{\b\f4\fs36 
+\par }\pard \fi-360\sb120\sa120\tx720 {\f4 1.\tab Ensure you have the following services enabled:
+\par }{\f1\fs20 \'b7\tab }{\f4 rarpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootparams
+\par }{\f1\fs20 \'b7\tab }{\f4 tftpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootps or dhcpd
+\par }{\f1\fs20 \'b7\tab }{\f4 nfs services
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 2.\tab Create a directory where you want the server to place the Solaris install files.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir -p /export/Solaris}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 3.\tab Mount the install CD
+\par }\pard \sb100\sa100 {\f11\fs20 # mount -o ro /dev/cd0 /mnt}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 4.\tab Copy the contents of the CD to the directory created in step 1
+\par }\pard \sb100\sa100 {\f11\fs20 # cp -a /mnt/* /export/Solaris/}{\f4 
+\par }{\i\f4 Note for Solaris 2.6 and 7: There are hidden files on the root of the CD-ROM that may not be copied by the above command and required for a successful boot of the installer. Run }{\i\f11\fs20 ls -a /export/Solaris}{\i\f4 
+ and compare it with the listing output by }{\i\f11\fs20 ls -a /mnt}{\i\f4 . If there are missing hidden files or folders, copy them individually using }{\i\f11\fs20 cp -a}{\i\f4 .}{\f4 
+\par }\pard \fi-360\li720\sb100\sa100\tx720 {\f4 5.\tab I have yet to test this method on multi-disc install sets, please do notify me if you have a verified method of adding a second disc to the install source directory.
+\par 6.\tab Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/ethers:
+\par 8:0:20:c0:ff:ee installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 7.\tab Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/hosts:
+\par ...
+\par 192.168.0.10 installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 8.\tab Make the /tftpboot directory if it doesn't already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /tftpboot}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 9.\tab Create or modify the /etc/bootparams file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/bootparams:
+\par installclient root=install.server.ip.address:/export/Solaris/Solaris_<version>/Tools/Boot install=install.server.ip.address:/export/Solaris boottype=:in   rootopts=:rsize=32768
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 10.\tab Add the location of the copied install CD to /etc/exports.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/exports:
+\par /export/Solaris /export/Solaris/Solaris_<version>/Tools/Boot -mapall=root
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 11.\tab 
+Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendi
+x B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 
+# cp -p /usr/exports/Solaris/Solaris_<version>/Tools/Boot/usr/platform/<platform group>/lib/fs/nfs/inetboot /tftpboot/inetboot_<platform group>_sol<version>
+\par # ln -s  /tftpboot/C0A8000A.<platform group>
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 12.\tab Restart all services listed in Step 1.
+\par }\pard \sb100\sa100 {\f4 *}{\i\f4 If you enabled tftpd and/or bootpd, be sure to restart inetd.}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 13.\tab If everything went according to plan, you can tell your Sun workstation to boot from the network and it will boot into the Solaris installer.
+\par }\pard \sb100\sa100 {\f11\fs20 ok boot net}{\f4 
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 II-b. Solaris}{\b\f4\fs36  }{\b\f4\fs36\super 2}{\b\f4\fs36 
+\par }\pard \fi-360\sb120\sa120\tx720 {\f4 1.\tab Create a directory where you want the server to place the Solaris install files.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /var/Solaris}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 2.\tab Navigate to the Tools directory on the install disc.
+\par }\pard \sb100\sa100 {\f11\fs20 # cd /path/to/Tools}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 3.\tab Run the setup_install_server script and direct it to the directory created in Step 1
+\par }\pard \sb100\sa100 {\f11\fs20 # ./setup_install_server /var/Solaris}{\f4 
+\par }{\i\f4 Special note for those making a Solaris 10 install server: There has been behavior observed by }{\field\fldedit{\*\fldinst ref {\i\f4  HYPERLINK "https://www.nick99nack.com/" }{\i\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b38000000680074007400700073003a002f002f007700770077002e006e00690063006b00390039006e00610063006b002e0063006f006d002f0000000000000301283e0800d70102005556460000000200062a060000
+000000643cc700000002006531a800000002006323a900000002007a460b000000}}}{\fldrslt {\i\f4\ul\cf3 nick99nack}}}{\i\f4 
+ that, when Solaris 10 is installed on a ZFS pool, you may be unable to export the install directory on account of it "is not a local filesystem." If that is an issue that you run into, use the solution he provided me below to create a UFS-formatted file 
+that can be mounted as a loop device:}{\f4 
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # mkfile 10g /var/jumpstart.img [you can put it anywhere]
+\par # lofiadm -a /var/jumpstart.img
+\par # newfs /dev/lofi/1
+\par # mount /dev/lofi/1 /var/Solaris
+\par }\pard \fi-360\li720\sb100\sa100\tx720 {\f4 4.\tab If your distribution of Solaris comes on multiple discs, you will need to, at this point, eject the first disc and put in the second disc. Volume Manager should mount the disc for you.
+\par 5.\tab Navigate to the Tools directory on the new disc and run the add_to_install_server script
+\par }\pard \sb100\sa100 {\f11\fs20 # ./add_to_install_server /var/Solaris}{\f4 
+\par }\pard \fi-360\li720\sb100\sa100\tx720 {\f4 6.\tab Repeat this as many times as necessary.
+\par 7.\tab Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/ethers:
+\par 8:0:20:c0:ff:ee installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 8.\tab Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/hosts:
+\par ...
+\par 192.168.0.10 installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 9.\tab Navigate to the Tools directory of the install server and run the add_install_client script, specifying your client's platform group and hostname.
+\par }\pard \sb100\sa100 {\f11\fs20 # ./add_install_client installclient sun4u}{\f4 
+\par }{\i\f4 Special note for those making a Solaris 10 install server to boot Solaris 9 or earlier: You need to run the inetconv command to make the changes the script made to your inetd.conf file reflect in the actual settings of the smf service!}{\f4 
+
+\par }{\f11\fs20 # inetconv}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 10.\tab If everything went according to plan, you can tell your Sun workstation to boot from the network and it will boot into the Solaris installer.
+\par }\pard \sb100\sa100 {\f11\fs20 ok boot net}{\f4 
+\par }\pard \sb199\sa199 {\b\f4\fs36 III. NeXTSTEP/OPENSTEP Diskful Install
+\par }\pard \sb100\sa100 {\f4 
+*Note: This operating system will only run on specific configurations of specific sun4m machines, namely the SPARCstation 4, SPARCstation 5 with microSPARC-II, SPARCstation 10 with SuperSPARC, and SPARCstation 20 with SuperSPARC. HyperSPARC CPU configurat
+ions will not work, and I have no data to suggest that the microSPARC-based lunchbox SPARCstations (SPARCclassic, LX, X, and ZX) will work either.
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 III-a. NetBSD/OpenBSD}{\b\f4\fs36 
+\par }\pard \fi-360\sb120\sa120\tx720 {\f4 1.\tab Ensure you have the following services enabled:
+\par }{\f1\fs20 \'b7\tab }{\f4 rarpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootparams
+\par }{\f1\fs20 \'b7\tab }{\f4 tftpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootps or dhcpd
+\par }{\f1\fs20 \'b7\tab }{\f4 nfs services
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 2.\tab Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/ethers:
+\par 08:00:20:c0:ff:ee installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 3.\tab Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/hosts:
+\par ...
+\par 192.168.0.10 installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 4.\tab Make the /tftpboot directory if it doesn't already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /tftpboot}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 5.\tab Add the location of the copied install CD to /etc/exports and reload mountd.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/exports:
+\par /export/installcd -mapall=root -alldirs
+\par }\pard \sb100\sa100 {\f11\fs20 # service mountd reload}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 6.\tab Make a directory where you wish to put the contents of the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir -p /export/installcd}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\b\f4 7.\tab ON A LINUX SYSTEM}{\f4  Mount the install CD and the directory created in step 5.
+\par }\pard \sb100\sa100 {\f11\fs20 # mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt/cdrom}{\f4  }{\f11\fs20 # mount install.server.ip.address:/export/installcd /mnt/nfs}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\b\f4 8.\tab ON A LINUX SYSTEM}{\f4  Copy the contents of the CD to the NFS mount.
+\par }\pard \sb100\sa100 {\f11\fs20 # cp -a /mnt/cdrom/* /mnt/nfs/}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 9.\tab Copy the tftp booter to /tftpboot and symbolically link the Sun
+ boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appendix B-iv. If you don't know your platform group, please refer to 
+Appendix B-i.)
+\par }\pard \sb100\sa100 {\f11\fs20 # cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep}{\f4  }{\f11\fs20 # ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 10.\tab Create or modify the /etc/dhcpd.conf or /etc/bootptab file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/dhcpd.conf:
+\par deny unknown-clients;
+\par allow bootp;
+\par subnet 192.168.0.0 netmask 255.255.255.0 \{
+\par range 192.168.0.100 192.168.0.150
+\par \}
+\par group \{
+\par host installclient \{
+\par hardware ethernet 08:00:20:00:07:ea;
+\par filename "C0A8000B.SUN4M";
+\par fixed-address installclient;
+\par option root-path "/export/installcd";
+\par \}
+\par \}
+\par /etc/bootptab:
+\par installclient:\\
+\par :ht=ether:\\
+\par :ha=080020C0FFEE:\\
+\par :sm=255.255.255.0:\\
+\par :lg=<server ip address>:\\
+\par :ip=192.168.0.10:\\
+\par :hn=installclient:\\
+\par :bf=C0A8000A.SUN4M:\\
+\par :bs=auto:\\
+\par :rp=/export/installcd/:\\
+\par :vm=auto:
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 11.\tab Create or modify the /etc/bootparams file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/bootparams:
+\par installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f11\fs20 12.\tab touch .profile}{\f4  in the NFS mount root to create it, if it does not already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # touch /export/installcd/.profile}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 13.\tab Restart all services listed in Step 1.
+\par }\pard \sb100\sa100 {\i\f4 If you enabled tftpd and/or bootpd, be sure to restart inetd.}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 14.\tab If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 ok boot net}{\f4 
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 III-b. Solaris}{\b\f4\fs36 
+\par }\pard \fi-360\sb120\sa120\tx720 {\f4 1.\tab Ensure you have the following services enabled:
+\par }{\f1\fs20 \'b7\tab }{\f4 rarpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootparams
+\par }{\f1\fs20 \'b7\tab }{\f4 tftpd
+\par }{\f1\fs20 \'b7\tab }{\f4 bootps or dhcpd
+\par }{\f1\fs20 \'b7\tab }{\f4 nfs services
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 2.\tab Create or modify the /etc/ethers file with your Sun's ethernet address and hostname:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/ethers:
+\par 08:00:20:c0:ff:ee installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 3.\tab Modify /etc/hosts with the hostname you specified in /etc/ethers and the IP address you wish to assign your client
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/hosts:
+\par ...
+\par 192.168.0.10 installclient
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 4.\tab Make the /tftpboot directory if it doesn't already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir /tftpboot}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 5.\tab Make a directory where you wish to put the contents of the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir -p /export/installcd}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 5.\tab Add the location of the copied install CD to /etc/exports and update the NFS exports.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/exports:
+\par /export/installcd -mapall=root -alldirs
+\par }\pard \sb100\sa100 {\f11\fs20 # shareall}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 6.\tab Make a directory where you wish to put the contents of the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 # mkdir -p /export/installcd}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\b\f4 7.\tab ON A LINUX SYSTEM}{\f4  Mount the install CD and the directory created in step 5.
+\par }\pard \sb100\sa100 {\f11\fs20 # mount -t ufs -o ro,ufstype=nextstep-cd /dev/cd0 /mnt/cdrom}{\f4  }{\f11\fs20 # mount install.server.ip.address:/export/installcd /mnt/nfs}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\b\f4 8.\tab ON A LINUX SYSTEM}{\f4  Copy the contents of the CD to the NFS mount.
+\par }\pard \sb100\sa100 {\f11\fs20 # cp -a /mnt/cdrom/* /mnt/nfs/}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 9.\tab 
+Copy the tftp booter to /tftpboot and symbolically link the Sun boot file to the /tftpboot directory, where the name is your Sun's IP address represented in hexadecimal followed by your platform group. (If you don't know how to do this, please see Appe
+ndix B-iv. If you don't know your platform group, please refer to Appendix B-i.)
+\par }\pard \sb100\sa100 {\f11\fs20 # cp -p /export/installcd/private/tftpboot/sparc/bootnet /tftpboot/nextstep}{\f4  }{\f11\fs20 # ln -s /tftpboot/nextstep /tftpboot/C0A8000A.SUN4M}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 10.\tab Create or modify the /etc/bootptab file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/bootptab:
+\par installclient:\\
+\par :ht=ether:\\
+\par :ha=080020C0FFEE:\\
+\par :sm=255.255.255.0:\\
+\par :lg=<server ip address>:\\
+\par :ip=192.168.0.10:\\
+\par :hn=installclient:\\
+\par :bf=C0A8000A.SUN4M:\\
+\par :bs=auto:\\
+\par :rp=/export/installcd/:\\
+\par :vm=auto:
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 11.\tab Create or modify the /etc/bootparams file.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 /etc/bootparams:
+\par installclient root=install.server.ip.address:/export/installcd private=install.server.ip.address:/export/installcd/private
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f11\fs20 12.\tab touch .profile}{\f4  in the NFS mount root to create it, if it does not already exist.
+\par }\pard \sb100\sa100 {\f11\fs20 # touch /export/installcd/.profile}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 13.\tab Restart all services listed in Step 1.
+\par }\pard \sb100\sa100 {\i\f4 If you enabled tftpd and/or bootpd, be sure to restart inetd.}{\f4 
+\par }\pard \fi-360\li720\sb120\sa120\tx720 {\f4 14.\tab If all works out, at this point you should be able to tell the Sun to boot from the network and it'll boot into the install CD.
+\par }\pard \sb100\sa100 {\f11\fs20 ok boot net}{\f4 
+\par }\pard \sb199\sa199 {\b\f4\fs36 Appendix A: Programming the IDPROM }{\b\f4\fs36\super 1}{\b\f4\fs36 
+\par }{\b\i\f4\fs36 A-i. What is the NVRAM, IDPROM, hostid, and ethernet address, and why is it important?}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\f4 
+Before proceeding, a warning: improper use of the OpenBoot PROM console can brick your system. I know the information contained in this document to be correct, but I cannot guarantee you won't brick your machine if you go beyond what I talk about here. Pr
+oceed with caution. This is not to scare you, but to inform you.
+\par Your Sun's NVRAM and IDPROM hold firmware configuration settings. This includes the default boot device, diagnostic behavior, default display device, and, perhaps most importantly for this guide, your ethernet address and hostid.
+\par If you're reading this section of the guide (and, honestly, in general), it's likely that your Sun's NVRAM battery is dead. This means three important things: a) your Sun will always boot up in diagnostic mode (causing it to try unsuccessfully to boot fro
+m the network), b) your IDPROM information will be invalid, and c) any changes you make to settings will be cleared
+ after you turn your machine off. This is a guide all about network booting and, with an invalid ethernet address, you can't do a lot. So, with that in mind, let's look at the makeup of the IDPROM data:
+\par }\trowd \trgaph108\trleft-108 \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx903\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8460 \pard \qc\sb100\sa100\intbl {\b\f4 Byte(s)\cell Contents\cell }\pard \intbl {
+\f4 \row }\trowd \trgaph108\trleft-108 \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx903\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8460 \pard \sb100\sa100\intbl {\f4 0\cell Always 01\cell }\pard \intbl {
+\f4 \row }\pard \sb100\sa100\intbl {\f4 1\cell 
+First byte of hostid (machine type - for ease of use you can use real-machine-type, but that may not work on older boot proms. DO NOT SET THIS TO A MACHINE TYPE THAT IS NOT YOUR MACHINE'S TYPE!! If you are unsure, please refer to the machine type ID table
+ below (A-ii).)\cell }\pard \intbl {\f4 \row }\pard \sb100\sa100\intbl {\f4 2-7\cell 
+6 byte ethernet address (first three bytes are the OUI (Oragnizationally Unique Identifier), if you are unsure of what your OUI is, please refer to the OUI table below (A-iV).)\cell }\pard \intbl {\f4 \row }\pard \sb100\sa100\intbl {\f4 8-b\cell 
+Date of manufacture (all 0s, doesn't matter)\cell }\pard \intbl {\f4 \row }\pard \sb100\sa100\intbl {\f4 c\cell Second byte of hostid\cell }\pard \intbl {\f4 \row }\pard \sb100\sa100\intbl {\f4 d\cell Third byte of hostid\cell }\pard \intbl {\f4 \row 
+}\pard \sb100\sa100\intbl {\f4 e\cell Fourth byte of hostid\cell }\pard \intbl {\f4 \row }\trowd \trgaph108\trleft-108 \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx903\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb
+\brdrs\brdrw15\brdrcf15 \cellx8460 \pard \sb100\sa100\intbl {\f4 f\cell IDPROM checksum (bitwise xor of bytes 0-e)\cell }\pard \intbl {\f4 \row }\pard \sb100\sa100 {\f4 
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 A-ii. A crash course in IDPROM programming}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\f4 To program your ethernet address to 8:0:20:c0:ff:ee and your hostid to 80coffee on a sun4m machine based on the table above:
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 1 0 mkp
+\par real-machine-type 1 mkp
+\par 8 2 mkp
+\par 0 3 mkp
+\par 20 4 mkp
+\par c0 5 mkp
+\par ff 6 mkp
+\par ee 7 mkp
+\par 0 8 mkp
+\par 0 9 mkp
+\par 0 a mkp
+\par 0 b mkp
+\par c0 c mkp
+\par ff d mkp
+\par ee e mkp
+\par 0 f 0 do i idprom@ xor loop f mkp
+\par }\pard \sb100\sa100 {\f4 If you're on a SPARCserver 1000, type }{\f11\fs20 update-system-idprom}{\f4  at the "ok" prompt.
+\par There is also another way to set the idprom on some revisions of the OBP: }{\f11\fs20 8 0 20 c0 ff ee 80c0ffee mkpl}{\f4  and hitting Return followed by hitting CTRL+D followed by CTRL+R. If it gives no output and returns you to the }{\f11\fs20 ok}{\f4 
+ prompt, it has succeeded. If it shows a Sun Microsystems copyright, it has failed. This is sometimes due to the idprom not being invalidated before running the command. If this is the case, run }{\f11\fs20 f idprom@ 1 xor f mkp}{\f4 
+ and hit Return, then trying the invocation again. If that still doesn't work, then try the method listed above.
+\par Reset the machine with the }{\f11\fs20 reset}{\f4  command and it should reboot with the new ethernet address and hostid.
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 A-iii. Hostid Machine Type Listing}{\b\f4\fs36 
+\par }\trowd \trgaph15\trleft-116\trhdr \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx2074\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8284 \pard \qc\sb240\sa240\intbl {\b\f4 First Byte of hostid\cell Machine
+\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-116 \cellx2074\cellx8284 \pard \sb240\sa240\intbl {\f4 01\cell 2/1x0\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 02\cell 2/50\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 11\cell 3/160\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 12\cell 3/50\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 13\cell 3/2x0\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 14
+\cell 3/110\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 17\cell 3/60\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 18\cell 3/e\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 21\cell 4/2x0\cell }\pard 
+\intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 22\cell 4/1x0\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 23\cell 4/3x0\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 24\cell 4/4x0\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 31\cell 386i\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 41\cell 3/4x0\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 42\cell 3/80\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 51
+\cell SPARCstation 1 (4/60)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 52\cell SPARCstation IPC (4/40)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 53\cell SPARCstation 1+ (4/65)\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 54\cell SPARCstation SLC (4/20)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 55\cell SPARCstation 2 (4/75)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 56\cell SPARCstation ELC\cell }\pard \intbl {
+\fs20 \row }\pard \sb240\sa240\intbl {\f4 57\cell SPARCstation IPX (4/50)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 61\cell 4/e\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 71\cell 4/6x0\cell }\pard \intbl {\fs20 \row 
+}\pard \sb240\sa240\intbl {\f4 72\cell SPARCstation 10 or SPARCstation 20\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 80\cell SPARCclassic, LX, 4, 5, SPARCserver 1000, Voyager, Ultra\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 83\cell Later(?) Ultra Servers, Blade, Sun Fire V-series (UltraSPARC)\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-116 \clbrdrb\brdrs\brdrw30\brdrcf15 \cellx2074\clbrdrb\brdrs\brdrw30\brdrcf15 \cellx8284 \pard 
+\sb240\sa240\intbl {\f4 84\cell Later(?) Ultra Servers, Sun Fire T-series\cell }\pard \intbl {\fs20 \row }\pard \sb199\sa199 {\b\i\f4\fs36 A-iv. Ethernet Address OUIs:}{\b\f4\fs36 
+\par }\trowd \trgaph15\trleft-120\trhdr \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx945\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8280 \pard \qc\sb240\sa240\intbl {\b\f4 OUI\cell Typical Machines\cell 
+}\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \cellx945\cellx8280 \pard \sb240\sa240\intbl {\f4 08:00:20\cell Most machines Ultra and before\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 00:03:BA\cell 
+Mostly Later(?) Ultra Servers, Sun Blades, and Fire V-series\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \clbrdrb\brdrs\brdrw30\brdrcf15 \cellx945\clbrdrb\brdrs\brdrw30\brdrcf15 \cellx8280 \pard \sb240\sa240\intbl {\f4 00:14:4F\cell 
+Mostly Later(?) Ultra Servers and Sun Fire T-series\cell }\pard \intbl {\fs20 \row }\pard \sb199\sa199 {\b\f4\fs36 Appendix B: Platform Groups, useful OpenBoot settings, and other errata
+\par }{\b\i\f4\fs36 B-i. Platform Group listing:}{\b\f4\fs36  }{\b\f4\fs36\super 1}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\f4 These are the platform groups for many of the SPARC systems you may encounter:
+\par }\trowd \trgaph15\trleft-120\trhdr \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx5670\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8280 \pard \qc\sb240\sa240\intbl {\b\f4 Model\cell Platform Group\cell 
+}\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \cellx5670\cellx8280 \pard \sb240\sa240\intbl {\f4 4/2x0\cell sun4\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 4/1x0\cell sun4\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 4/3x0\cell sun4\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 4/4x0\cell sun4\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCstation 1/1+\cell sun4c\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 SPARCstation 2\cell sun4c\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCstation 10/20\cell sun4m\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCstation 5/4\cell sun4m\cell }\pard \intbl {
+\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCstation IPC/IPX\cell sun4c\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCclassic/SPARCstation LX/ZX\cell sun4m\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCclassic X
+\cell sun4m\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 1\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 1E\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 2\cell sun4u
+\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 30\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 5/10\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 60\cell sun4u\cell 
+}\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra 80\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Blade 1000\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Blade 2000\cell sun4u\cell 
+}\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Blade 100/150\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Blade 2500 (Silver)\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 
+Blade 1500 (Silver)\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Netra T1\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCserver 1000\cell sun4d\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 SPARCserver 3x0/4x0\cell sun4\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 SPARCserver 6x0MP\cell sun4m\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Ultra Enterprise/UltraSPARC-based Fire V-seies
+\cell sun4u\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Fire T1000/T2000\cell sun4v\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Fire T5120/T5220\cell sun4v\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 
+Fire T5140/T5240/T5440\cell sun4v\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \clbrdrb\brdrs\brdrw30\brdrcf15 \cellx5670\clbrdrb\brdrs\brdrw30\brdrcf15 \cellx8280 \pard \sb240\sa240\intbl {\f4 x86\cell i86pc\cell }\pard \intbl {\fs20 \row 
+}\pard \sb199\sa199 {\b\i\f4\fs36 B-ii. Operating system compatibility matrix}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\f4 This is a compatibility matrix for operating systems on Sun systems. This information is correct to the best of my knowledge, but may become outdated over time.
+\par }\trowd \trgaph15\trleft-120\trhdr \clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx1705\clbrdrt\brdrs\brdrw30\brdrcf15 \clbrdrb\brdrs\brdrw15\brdrcf15 \cellx8280 \pard \qc\sb240\sa240\intbl {\b\f4 System\cell 
+Compatible Operating Systems\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \cellx1705\cellx8280 \pard \sb240\sa240\intbl {\f4 Sun-1\cell Sun UNIX 0.7\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Sun-2\cell 
+SunOS 1.0 - 4.0.1, NetBSD (Tier II)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 Sun-3\cell SunOS 3.0 - 4.1.1_U1, NetBSD (Tier II), OpenBSD (up to 2.9)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 sun4\cell 
+SunOS 4.0.3e - 4.1.4, Solaris 2.0 - 7, NetBSD (Tier II), OpenBSD (up to 5.9)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 sun4c\cell SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 7, NetBSD (Tier II), OpenBSD (up to 5.9)\cell }\pard \intbl {\fs20 
+\row }\pard \sb240\sa240\intbl {\f4 sun4d\cell Solaris 2.2 - 8, Linux (with patches)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 sun4m\cell 
+SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 9, NetBSD (Tier II), OpenBSD (up to 5.9), NeXTSTEP 3.3 and OPENSTEP 4.x (SuperSPARC and microSPARC CPUs only), Linux (with patches)\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 sun4u\cell 
+Solaris 2.5 - 10 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD, Linux\cell }\pard \intbl {\fs20 \row }\pard \sb240\sa240\intbl {\f4 sun4v\cell Solaris 10 3/05 HW2 and newer and OpenBSD, Linux\cell }\pard \intbl {\fs20 \row }\pard 
+\sb240\sa240\intbl {\f4 SPARCserver 600MP\cell SunOS 4.1.2 - 4.1.4, Solaris 2.1 - 2.5.1, NetBSD (Tier II), OpenBSD (up to 5.9), Linux (with patches)\cell }\pard \intbl {\fs20 \row }\trowd \trgaph15\trleft-120 \clbrdrb\brdrs\brdrw30\brdrcf15 \cellx1705
+\clbrdrb\brdrs\brdrw30\brdrcf15 \cellx8280 \pard \sb240\sa240\intbl {\f4 UltraSPARC I\cell Solaris 2.5 - 9 (7 is first 64-bit release), NetBSD (Tier I), OpenBSD, Linux\cell }\pard \intbl {\fs20 \row }\pard \sb199\sa199 {\b\i\f4\fs36 
+B-iii. Useful OpenBoot settings}{\b\f4\fs36 
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iii-a. diag-switch?
+\par }\pard \sb100\sa100 {\f4 
+This determines if the system goes through an extended self-test during startup. It also sets the default boot device to the network by default while this setting is set to true. It will be set to true by default every time you turn on your system on if t
+he timekeeper battery is dead. I would recommend setting this to false to shorten the time it takes to subsequently reboot.
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iii-b. auto-boot?
+\par }\pard \sb100\sa100 {\f4 This determines if the system tries to auto-boot u
+pon startup. This is set to true by default. It's a matter of personal preference whether it's enabled or not. I prefer to boot to the OpenBoot prompt and then choose my boot device from there. Be aware this setting will be largely inconsequential when yo
+u cold boot the system if the timekeeper battery is dead.
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iii-c. boot-device
+\par }\pard \sb100\sa100 {\f4 
+This controls what the default setting is when the boot command is issued with no arguments. The default is for it to try booting from disk first and then from the network. Like auto-boot? It's a largely inconsequential setting if your timekeeper battery 
+is dead.
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iii-d. output-device
+\par }\pard \sb100\sa100 {\f4 I put this here because sometimes you don't want the default output device to be what the firmware defaults to, or you want to change settings for the default output device. This setting allows you to specify the default outp
+ut device (generally screen or ttya by default depending on if you have a keyboard attached or not) and any settings for said output device (I set my framebuffer to run at 1024x768x60 using this setting, for instance).
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 B-iv. Working with iso files}{\b\f4\fs36 
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iv-a. Using lofiadm to mount iso images. (Solaris)
+\par }\pard \sb100\sa100 {\f4 In some versions of Solaris (I've tested with Solaris 10, but it may exist in other versions as well) there exists the lofiadm utility. This exists as a way to work with loopback files (disc/k image files). For 
+the purposes of this guide, we will be looking at using it to mount CD images.
+\par You can invoke the lofiadm utility with the following:
+\par }{\f11\fs20 # lofiadm -a /path/to/image.iso}{\f4 
+\par This will add the iso file as a loopback filesystem on the first available lofi device. You can also specify a lofi device, like so (where n is the lofi device number):
+\par }{\f11\fs20 # lofiadm -a /path/to/image.iso /dev/lofi/n}{\f4 
+\par The output of either of these commands will return the lofi device that the iso file was added to. You can then mount the device like so (where n is the lofi device number):
+\par }{\f11\fs20 # mount -F hsfs -o ro /dev/lofi/n /mnt}{\f4 
+\par You can also combine both commands together:
+\par }{\f11\fs20 # mount -F hsfs -o ro $(lofiadm -a /path/to/image.iso) /mnt}{\f4 
+\par }\pard \sb240\sa240 {\b\f4\fs28 B-iv-b. Using vnconfig to mount iso images. (NetBSD/OpenBSD)
+\par }\pard \sb100\sa100 {\f4 To mount cdrom images in NetBSD and OpenBSD, you will want to use vnconfig. To create a device file that is linked to your image, run the following:
+\par }{\f11\fs20 # vnconfig vnd0 /path/to/image.iso}{\f4 
+\par Then it will be possible to mount this device as you would a normal cdrom:
+\par }{\f11\fs20 # mount -t cd9660 /dev/vnd0a /mnt}{\f4 
+\par Once that is finished, you may work with the image as you would any other cdrom filesystem.
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 B-v. Naming your tftp boot file.}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\f4 This is a short and simple guide for how to name your Sun's tftp boot file, which needs to be named in a specific way.
+\par Sun workstations require the tftp boot file to be named for their IP address represented in hexadecimal followed by their platform group.
+\par First, you need to determine your IP address in hexadecimal. This can be done with the bc command.
+\par Secondly, you need to determine your platform group. See Appendix B-i for more information. For the sake of this demonstration, I'll be choosing the sun4u platform group.
+\par }\pard \tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656 {\f11\fs20 # bc
+\par obase=16
+\par 192
+\par C0
+\par 168
+\par A8
+\par 0
+\par 0
+\par 10
+\par A
+\par }\pard \sb100\sa100 {\f4 Thirdly, you must symbolically link the boot file to your /tftpboot directory.
+\par }{\f11\fs20 # ln -s /path/to/boot/file /tftpboot/C0A8000A.SUN4U}{\f4 
+\par }\pard \sb199\sa199 {\b\f4\fs36 Appendix C: Cited works and further reading
+\par }{\b\i\f4\fs36 C-i. Cited works}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "http://www.obsolyte.com/sunFAQ/faq_nvram.html" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b5c00000068007400740070003a002f002f007700770077002e006f00620073006f006c007900740065002e0063006f006d002f00730075006e004600410051002f006600610071005f006e007600720061006d002e00
+680074006d006c00000000006e007300740061006c006c0069006e0067002500320000670d1300000002001612530000000301631a080016000200500136000000}}}{\fldrslt {\f4\ul\cf3 FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid}}}{\f4 
+\par }{\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "https://www.panix.com/~rawallis/sunos41_diskless.html" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b6c000000680074007400700073003a002f002f007700770077002e00700061006e00690078002e0063006f006d002f007e0072006100770061006c006c00690073002f00730075006e006f007300340031005f006400
+690073006b006c006500730073002e00680074006d006c000000000067002500320000670d1300000002001612530000000301631a080016000200500136000000}}}{\fldrslt {\f4\ul\cf3 SunOS 4.1 Diskless Installation Guide}}}{\f4 
+\par }\pard \sb199\sa199 {\b\i\f4\fs36 C-ii. Further reading}{\b\f4\fs36 
+\par }\pard \sb100\sa100 {\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "https://www.netbsd.org/docs/network/netboot/" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b5a000000680074007400700073003a002f002f007700770077002e006e00650074006200730064002e006f00720067002f0064006f00630073002f006e006500740077006f0072006b002f006e006500740062006f00
+6f0074002f0000000000730073002e00680074006d006c000000000067002500320000670d1300000002001612530000000301631a080016000200500136000000}}}{\fldrslt {\f4\ul\cf3 NetBSD Diskless HOW-TO pages}}}{\f4 
+\par }{\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "https://man.openbsd.org/diskless" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b42000000680074007400700073003a002f002f006d0061006e002e006f00700065006e006200730064002e006f00720067002f006400690073006b006c00650073007300000000006b002f006e006500740062006f00
+6f0074002f0000000000730073002e00680074006d006c00000000006700250032}}}{\fldrslt {\f4\ul\cf3 diskless(8) OpenBSD man page}}}{\f4 
+\par }{\b\f4\fs36 Footnotes
+\par }\pard \fi-360\sb100\sa100\tx720 {\f4 1.\tab }{\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "http://www.obsolyte.com/sunFAQ/faq_nvram.html" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b5c00000068007400740070003a002f002f007700770077002e006f00620073006f006c007900740065002e0063006f006d002f00730075006e004600410051002f006600610071005f006e007600720061006d002e00
+680074006d006c000000000073002e00680074006d006c00000000006700250032000000000000e65e02001612530000000301631a080016000200500136000000}}}{\fldrslt {\f4\ul\cf3 FAQ: Frequently Asked Questions about Sun NVRAM, IDPROM, hostid}}}{\f4 
+\par 2.\tab }{\field\fldedit{\*\fldinst ref {\f4  HYPERLINK "https://www.panix.com/~rawallis/sunos41_diskless.html" }{\f4\fs20 {\*\datafield 
+00d0c9ea79f9bace118c8200aa004ba90b0200000003000000e0c9ea79f9bace118c8200aa004ba90b6c000000680074007400700073003a002f002f007700770077002e00700061006e00690078002e0063006f006d002f007e0072006100770061006c006c00690073002f00730075006e006f007300340031005f006400
+690073006b006c006500730073002e00680074006d006c00000000006700250032000000000000e65e02001612530000000301631a080016000200500136000000}}}{\fldrslt {\f4\ul\cf3 SunOS 4.1 Diskless Installation Guide}}}{\f4 
+\par }\pard 
+\par }
